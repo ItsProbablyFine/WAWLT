@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Cozy Mystery Construction Kit</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="sim/datascript-0.18.4.min.js" defer></script>
+	<script src="sim/util.js" defer></script>
+	<script src="sim/engine.js" defer></script>
+	<script src="sim/sim.js" defer></script>
+	<script src="sim/actions.js" defer></script>
+	<script src="sim/effects.js" defer></script>
+	<script src="sim/siftpatterns.js" defer></script>
+	<script src="main.js" defer></script>
+</head>
+<body>
+	<main>
+		<div class="transcript-wrapper">
+			<h3>The story so far</h3>
+			<div class="transcript" id="transcriptUI"></div>
+		</div>
+		<div class="sidebar">
+			<div class="suggestions-wrapper">
+				<h3>Suggested actions</h3>
+				<div class="filter-suggestions">
+					<strong>Filter actions: </strong>
+					<input type="text" id="filterStringInput" placeholder="John:|Betray">
+					<button id="rerollSuggestedActionsButton">Reroll</button>
+				</div>
+				<div id="suggestedActionsUI"></div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

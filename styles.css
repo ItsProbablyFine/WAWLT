@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Georgia;
+}
+main {
+  display: flex;
+  flex-flow: row wrap;
+}
+h3 {
+  margin-bottom: 1rem;
+}
+button {
+  padding: .25rem;
+}
+.transcript-wrapper {
+  background: #efe;
+  padding: 2rem;
+  width: 60%;
+}
+.transcript .entry {
+  border-left: 4px solid #ccc;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+}
+.transcript .entry:empty:not(:focus):before {
+  color: grey;
+  content: attr(data-default-text);
+  font-style: italic;
+}
+.sidebar {
+  background: #eef;
+  padding: 2rem;
+  width: 40%;
+}
+.suggestions-wrapper {
+  position: relative;
+}
+.filter-suggestions {
+  margin-bottom: 1rem;
+}
+.suggested-action {
+  color: blue;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  text-decoration: underline;
+}
