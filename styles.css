@@ -26,7 +26,10 @@ button {
   margin-bottom: 1rem;
   padding-left: 1rem;
 }
-.transcript .entry:empty:not(:focus):before {
+.transcript .entry .defaultdesc {
+  font-weight: bold;
+}
+.transcript .entry .userdesc:empty:not(:focus):before {
   color: grey;
   content: attr(data-default-text);
   font-style: italic;

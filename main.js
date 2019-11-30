@@ -30,8 +30,9 @@ function runSuggestedAction(suggested) {
   // run selected action in simulation
   const event = Sim.runAction(suggested.action, suggested.bindings);
   // add new entry to bottom of transcript, with default text from selected action
-  transcriptUI.appendChild(createNode(`<div class="entry" contenteditable data-default-text="${event.text}">
-    ${event.text}
+  transcriptUI.appendChild(createNode(`<div class="entry">
+    <div class="defaultdesc">${event.text}</div>
+    <div class="userdesc" contenteditable data-default-text="Your description here..."></div>
   </div>`));
   // get and render new suggested actions
   renderSuggestedActions();
