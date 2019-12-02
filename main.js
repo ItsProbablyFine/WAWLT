@@ -4,6 +4,51 @@ function createNode(html) {
   return div.firstChild;
 }
 
+// Given a potential action and an author goal to evaluate it against,
+// return a score representing this potential action's direct contribution to the goal.
+// Currently we do this by counting how many results there are for the goal's query
+// before and after this action is performed, then returning the difference.
+function evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal) {
+  const {action, bindings} = potentialAction;
+  const event = Felt.realizeEvent(action, bindings);
+  const goalType = authorGoalTypes[authorGoal.type];
+  if (!goalType.query) {
+    console.warn(`No query defined for author goal type ${authorGoal.type}!`);
+    return 0;
+  }
+  const query = goalType.query(authorGoal.params);
+  const pattern = Felt.parseSiftingPattern(query);
+  const beforeDB = Sim.getDB();
+  const beforeResults = Felt.runSiftingPattern(beforeDB, pattern).length;
+  const afterDB = Felt.addEvent(beforeDB, event);
+  const afterResults = Felt.runSiftingPattern(afterDB, pattern).length;
+  const score = goalType.invertQuery ? beforeResults - afterResults : afterResults - beforeResults;
+  /*
+  if (score !== 0) {
+    console.log(potentialAction, authorGoal, score);
+  }
+  */
+  return score;
+}
+
+// Given a potential action, evaluate it against all of the current game state conditions
+// (including author goals and character goals),
+// and update it with information about the goals it contributes to,
+// returning an overall summary score reflecting how well this action fits the current state.
+function evaluatePotentialAction(potentialAction) {
+  potentialAction.authorGoals = [];
+  let overallScore = 0;
+  for (let authorGoal of authorGoals) {
+    const scoreFromThisGoal = evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal);
+    if (scoreFromThisGoal > 0) {
+      potentialAction.authorGoals.push(authorGoal);
+    }
+    overallScore += scoreFromThisGoal;
+  }
+  potentialAction.score = overallScore;
+  return overallScore;
+}
+
 function renderActionTagline(action, bindings) {
   let tagline = action.tagline || '';
   console.log(bindings);
@@ -41,9 +86,11 @@ function runSuggestedAction(suggested) {
 function renderSuggestedActions() {
   // clear any previous suggestions
   suggestedActionsUI.innerHTML = '';
-  // query sim for new recommended actions (TODO make this smarter, right now it's just random)
+  // query sim for new recommended actions (TODO move this logic into sim module?)
   const filterString = filterStringInput.value;
   const suggestedActions = Sim.getSuggestedActions().filter(a => actionMatchesFilterString(a, filterString));
+  suggestedActions.forEach(evaluatePotentialAction);
+  suggestedActions.sort((a, b) => b.score - a.score);
   // add new suggested actions to suggestedActionsUI
   for (let i = 0; i < suggestedActions.length && i < 5; i++) {
     const suggested = suggestedActions[i];
@@ -139,27 +186,6 @@ let authorGoals = [
   {type: "castSuspicionOnCharacter", params: [Sim.getAllCharacterNames()[0]]},
   {type: "escalateTensionBetweenValues", params: ["comfort", "survival"]}
 ];
-
-// Given a potential action and an author goal to evaluate it against,
-// return a score representing this potential action's direct contribution to the goal.
-// Currently we do this by counting how many results there are for the goal's query
-// before and after this action is performed, then returning the difference.
-function evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal) {
-  const {action, bindings} = potentialAction;
-  const event = Felt.realizeEvent(action, bindings);
-  const goalType = authorGoalTypes[authorGoal.type];
-  const query = goalType.query(authorGoal.params);
-  const pattern = Felt.parseSiftingPattern(query);
-  const beforeDB = Sim.getDB();
-  const beforeResults = Felt.runSiftingPattern(beforeDB, pattern).length;
-  const afterDB = Felt.addEvent(beforeDB, event);
-  const afterResults = Felt.runSiftingPattern(afterDB, pattern).length;
-  const score = goalType.invertQuery ? beforeResults - afterResults : afterResults - beforeResults;
-  if (score !== 0) {
-    console.log(potentialAction, authorGoal, score);
-  }
-  return score;
-}
 
 function renderAuthorGoalEditor() {
   const charNames = Sim.getAllCharacterNames();
