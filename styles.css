@@ -51,6 +51,9 @@ button {
   margin-bottom: 1rem;
   text-decoration: underline;
 }
+#openAuthorGoalEditorButton {
+  margin-bottom: 1rem;
+}
 #authorGoalEditorUI {
   display: none; /* Hidden by default */
   position: fixed; /* Sit on top of the page content */

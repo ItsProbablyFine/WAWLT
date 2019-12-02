@@ -1,4 +1,4 @@
-registerAction('betray', {
+Felt.registerAction('betray', {
   tagline: '?n1: Betray ?n2',
   where: [
     '?dislike "type" "attitude"',
@@ -19,7 +19,7 @@ registerAction('betray', {
   })
 });
 
-registerAction('hangOutWith', {
+Felt.registerAction('hangOutWith', {
   tagline: '?n1: Hang out with ?n2',
   where: [
     '?c1 "name" ?n1',
@@ -46,7 +46,7 @@ registerAction('hangOutWith', {
   })
 });
 
-registerAction('seeCuteAnimal', {
+Felt.registerAction('seeCuteAnimal', {
   tagline: '?n1: See cute animal',
   where: [
     '?c1 "name" ?n1'
@@ -59,7 +59,7 @@ registerAction('seeCuteAnimal', {
 
 let allProjectTypes = ['art','craft','poetry','programming','research','writing'];
 
-registerAction('startProject', {
+Felt.registerAction('startProject', {
   tagline: '?n1: Start new project',
   where: [
     '?c1 "name" ?n1'
@@ -79,7 +79,7 @@ registerAction('startProject', {
   }
 });
 
-registerAction('makeProgressOnProject', {
+Felt.registerAction('makeProgressOnProject', {
   tagline: '?n1: Make progress on project ?proj',
   where: [
     '?c1 "name" ?n1',
@@ -98,7 +98,7 @@ registerAction('makeProgressOnProject', {
   })
 });
 
-registerAction('workFruitlesslyOnProject', {
+Felt.registerAction('workFruitlesslyOnProject', {
   tagline: '?n1: Work fruitlessly on project ?proj',
   where: [
     '?c1 "name" ?n1',
@@ -117,7 +117,7 @@ registerAction('workFruitlesslyOnProject', {
   })
 });
 
-registerAction('abandonProject', {
+Felt.registerAction('abandonProject', {
   tagline: '?n1: Abandon project ?proj',
   where: [
     '?c1 "name" ?n1',
@@ -137,7 +137,7 @@ registerAction('abandonProject', {
   })
 });
 
-registerAction('resumeProject', {
+Felt.registerAction('resumeProject', {
   tagline: '?n1: Resume work on project ?proj',
   where: [
     '?c1 "name" ?n1',
@@ -157,7 +157,7 @@ registerAction('resumeProject', {
   })
 });
 
-registerAction('finishProject', {
+Felt.registerAction('finishProject', {
   tagline: '?n1: Finish project ?proj',
   where: [
     '?c1 "name" ?n1',
@@ -178,7 +178,7 @@ registerAction('finishProject', {
   })
 });
 
-registerAction('showProject_loved', {
+Felt.registerAction('showProject_loved', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts positively',
   where: [
     '?c1 "name" ?n1',
@@ -202,7 +202,7 @@ registerAction('showProject_loved', {
   })
 });
 
-registerAction('showProject_neutral', {
+Felt.registerAction('showProject_neutral', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts neutrally',
   where: [
     '?c1 "name" ?n1',
@@ -226,7 +226,7 @@ registerAction('showProject_neutral', {
   })
 });
 
-registerAction('showProject_hated', {
+Felt.registerAction('showProject_hated', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts negatively',
   where: [
     '?c1 "name" ?n1',
@@ -250,7 +250,7 @@ registerAction('showProject_hated', {
   })
 });
 
-registerAction('getDiscouraged', {
+Felt.registerAction('getDiscouraged', {
   tagline: '?n1: Consider restarting project ?proj, but recall ?n2\'s criticisms and give up',
   where: [
     // ?e1: ?c1 shows ?proj to ?c2, who hates it

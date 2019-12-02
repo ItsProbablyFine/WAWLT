@@ -17,6 +17,10 @@ function getAllCharacterPairs(db) {
                         :where [?c1 "type" "char"] [?c2 "type" "char"] [(not= ?c1 ?c2)]]', db);
 }
 
+function getCharacterIDByName(db, name) {
+  return datascript.q(`[:find ?c :where [?c "type" "char"] [?c "name" "${name}"]]`, db)[0][0];
+}
+
 let allNames = [
   'Aaron', 'Adam', 'Alex', 'Alice', 'Ann',
   'Bella', 'Ben', 'Beth',
@@ -93,15 +97,15 @@ for (let charPair of getAllCharacterPairs(gameDB)) {
 /// TIE IT ALL TOGETHER
 
 // Given the DB and a list of action specs, return a random possible action with bindings.
-function getRandomAction(db, allActions){
-  let allPossible = possibleActions(db, allActions);
+function getRandomAction(db){
+  const allPossible = Felt.possibleActions(db);
   return randNth(allPossible);
 }
 
 // Like `runRandomAction`, but assigns an equal selection weight to all valid action types.
-function getRandomActionByType(db, allActions){
-  let allPossibleByType = possibleActionsByType(db, allActions);
-  let type = randNth(Object.keys(allPossibleByType));
+function getRandomActionByType(db){
+  const allPossibleByType = Felt.possibleActionsByType(db);
+  const type = randNth(Object.keys(allPossibleByType));
   return randNth(allPossibleByType[type]);
 }
 
@@ -120,27 +124,19 @@ function handleSimEvent(simEvent) {
 let nuggetsAlreadyFound = [];
 
 function runSiftingPatterns() {
-  let allNuggets = [];
-  for (let pattern of Object.values(siftingPatternLibrary)) {
-    let results = datascript.q(pattern.query, gameDB);
-    for (let result of results) {
-      let nuggetStr = pattern.name + '|' + result.join('|');
-      if (nuggetsAlreadyFound.indexOf(nuggetStr) > -1) continue;
-      let vars = {};
-      for (let i = 0; i < pattern.lvars.length; i++) {
-        vars[pattern.lvars[i]] = result[i];
-      }
-      allNuggets.push({pattern: pattern, vars: vars});
-      nuggetsAlreadyFound.push(nuggetStr);
-    }
+  let newNuggets = []; 
+  for (let nugget of Felt.runSiftingPatterns()) {
+    const nuggetStr = nugget.pattern.name + '|' + Object.values(nugget.vars).join('|');
+    if (nuggetsAlreadyFound.indexOf(nuggetStr) > -1) continue;
+    newNuggets.push(nugget);
+    nuggetsAlreadyFound.push(nuggetStr);
   }
-  return allNuggets;
+  return newNuggets;
 }
 
 /// return Sim singleton object
 
 return {
-  allNames,
   // Return the current simulation state as a DataScript DB.
   getDB: function() {
     return gameDB;
@@ -153,17 +149,20 @@ return {
   getAllCharacterNames: function () {
     return getAllCharacterNames(gameDB);
   },
-  //
+  // Get the ID of the character with the specified name.
+  getCharacterIDByName: function(name) {
+    return getCharacterIDByName(gameDB, name);
+  },
+  // Get a list of suggested potential actions, sorted by salience to the current situation.
   getSuggestedActions: function() {
-    const allActions = Object.values(actionLibrary);
-    const allPossible = possibleActions(gameDB, allActions);
+    const allPossible = Felt.possibleActions(gameDB);
     return shuffle(allPossible);
   },
-  //
+  // Run a single potential action.
   runAction: function(action, bindings) {
-    const event = realizeEvent(action, bindings);
+    const event = Felt.realizeEvent(action, bindings);
     console.log(event);
-    gameDB = addEvent(gameDB, event);
+    gameDB = Felt.addEvent(gameDB, event);
     return event;
   },
   /*
@@ -172,22 +171,21 @@ return {
     console.log('Running diary action of type: ' + actionName);
     let event = {type: 'event', isDiaryEvent: true, eventType: actionName, text: actionText, actor: 1, target: 1};
     console.log(event);
-    gameDB = addEvent(gameDB, event);
-    handleSimEvent(event);
-  },
-  // Perform the specified action with the specified bindings.
-  runActionWithBindings: function(action, bindings) {
-    console.log('Running action named: ' + action.name + '\nwith bindings: ' + JSON.stringify(bindings));
-    let event = realizeEvent(action, bindings);
-    console.log(event);
-    gameDB = addEvent(gameDB, event);
+    gameDB = Felt.addEvent(gameDB, event);
     handleSimEvent(event);
   },
   */
+  // Perform the specified action with the specified bindings.
+  runActionWithBindings: function(action, bindings) {
+    console.log('Running action named: ' + action.name + '\nwith bindings: ' + JSON.stringify(bindings));
+    let event = Felt.realizeEvent(action, bindings);
+    console.log(event);
+    gameDB = Felt.addEvent(gameDB, event);
+    handleSimEvent(event);
+  },
   // Perform a random possible action.
   runRandomAction: function() {
-    let allActions = Object.values(actionLibrary);
-    let possible = getRandomActionByType(gameDB, allActions);
+    const possible = getRandomActionByType(gameDB);
     this.runActionWithBindings(possible.action, possible.bindings);
   },
   // Register an event handler function to be called whenever a simulation event takes place.

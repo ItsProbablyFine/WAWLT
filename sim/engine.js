@@ -1,3 +1,5 @@
+window.Felt = (function(){
+
 /// PARSE SIFTING PATTERNS
 
 function findLvars(s) {
@@ -62,6 +64,40 @@ function registerSiftingPattern(name, patternLines) {
   let pattern = parseSiftingPattern(patternLines);
   pattern.name = name;
   siftingPatternLibrary[name] = pattern;
+}
+
+/// RUN SIFTING PATTERNS
+
+function runSiftingPattern(db, pattern) {
+  if (!pattern.query || !pattern.lvars) {
+    throw Error("Invalid sifting pattern!", pattern);
+  }
+  const results = datascript.q(pattern.query, db); // TODO include rules, they're important
+  const nuggets = results.map(function(result) {
+    let vars = {};
+    for (let i = 0; i < pattern.lvars.length; i++) {
+      vars[pattern.lvars[i]] = result[i];
+    }
+    return {pattern, vars};
+  });
+  return nuggets;
+}
+
+function runSiftingPatternByName(db, patternName) {
+  if (!siftingPatternLibrary[patternName]) {
+    throw Error(`There isn't a registered sifting pattern named ${name}!`);
+  }
+  const pattern = siftingPatternLibrary[patternName];
+  return runSiftingPattern(db, pattern);
+}
+
+function runSiftingPatterns(db) {
+  let allNuggets = [];
+  for (let pattern of Object.values(siftingPatternLibrary)) {
+    const nuggets = runSiftingPattern(db, pattern);
+    allNuggets = allNuggets.concat(nuggets);
+  }
+  return allNuggets;
 }
 
 /// REGISTER ACTIONS
@@ -208,3 +244,29 @@ function possibleActionsByType(db, allActions) {
   }
   return possibleByType;
 }
+
+return {
+  findLvars,
+  quotewrapIfNeeded,
+  parseSiftingPatternClause,
+  parseSiftingPattern,
+  registerSiftingPattern,
+  runSiftingPattern,
+  runSiftingPatterns,
+  registerAction,
+  registerEffectHandler,
+  checkEffectKeys,
+  processEffect,
+  addEvent,
+  realizeEvent,
+  possibleActions: function(db) {
+    const allActions = Object.values(actionLibrary);
+    return possibleActions(db, allActions);
+  },
+  possibleActionsByType: function(db) {
+    const allActions = Object.values(actionLibrary);
+    return possibleActionsByType(db, allActions);
+  }
+};
+
+})();

@@ -1,4 +1,4 @@
-registerSiftingPattern('movedAndMissingSomeone', [
+Felt.registerSiftingPattern('movedAndMissingSomeone', [
   '?e1 eventType moved',
   '?e2 eventType missing-someone',
   '(< ?e1 ?e2)',
@@ -11,7 +11,7 @@ registerSiftingPattern('movedAndMissingSomeone', [
     [?eMid "eventType" "moved"])'
 ]);
 
-registerSiftingPattern('readAndGoodIdea', [
+Felt.registerSiftingPattern('readAndGoodIdea', [
   '(or [?e1 "eventType" "read"]\
        [?e1 "eventType" "finished-book"])',
   '(or [?e2 "eventType" "good-idea"]\
@@ -25,7 +25,7 @@ registerSiftingPattern('readAndGoodIdea', [
     [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('wentToPartyAndDinedOut', [
+Felt.registerSiftingPattern('wentToPartyAndDinedOut', [
   '?e1 eventType went-to-party',
   '?e2 eventType dined-out',
   '(< ?e1 ?e2)',
@@ -38,7 +38,7 @@ registerSiftingPattern('wentToPartyAndDinedOut', [
     [?eMid "eventType" "went-to-party"])'
 ]);
 
-registerSiftingPattern('hobbyAndExercised', [
+Felt.registerSiftingPattern('hobbyAndExercised', [
   '?e1 eventType hobby',
   '?e2 eventType exercised',
   '(< ?e1 ?e2)',
@@ -51,7 +51,7 @@ registerSiftingPattern('hobbyAndExercised', [
     [?eMid "eventType" "hobby"])'
 ]);
 
-registerSiftingPattern('niceConvoAndHeardFrom', [
+Felt.registerSiftingPattern('niceConvoAndHeardFrom', [
   '?e1 eventType nice-convo',
   '?e2 eventType heard-from',
   '(< ?e1 ?e2)',
@@ -64,7 +64,7 @@ registerSiftingPattern('niceConvoAndHeardFrom', [
 
 ]);
 
-registerSiftingPattern('playGameAndAvoidResponsibility', [
+Felt.registerSiftingPattern('playGameAndAvoidResponsibility', [
   '?e1 eventType played-game',
   '?e2 eventType avoided-responsibility',
   '(< ?e1 ?e2)',
@@ -76,7 +76,7 @@ registerSiftingPattern('playGameAndAvoidResponsibility', [
     [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('gotHelpAndFinishedWork', [
+Felt.registerSiftingPattern('gotHelpAndFinishedWork', [
   '?e1 eventType got-help',
   '?e2 eventType finished-work',
   '(< ?e1 ?e2)',
@@ -89,7 +89,7 @@ registerSiftingPattern('gotHelpAndFinishedWork', [
     [?eMid "eventType" "got-help"])'
 ]);
 
-registerSiftingPattern('shoppedAndFeltExcited', [
+Felt.registerSiftingPattern('shoppedAndFeltExcited', [
   '?e1 eventType shopped',
   '?e2 eventType feeling-excited',
   '(< ?e1 ?e2)',
@@ -101,7 +101,7 @@ registerSiftingPattern('shoppedAndFeltExcited', [
     [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('wentHomeAndWatchedTV', [
+Felt.registerSiftingPattern('wentHomeAndWatchedTV', [
   '?e1 eventType went-home',
   '?e2 eventType watched',
   '(< ?e1 ?e2)',
@@ -114,7 +114,7 @@ registerSiftingPattern('wentHomeAndWatchedTV', [
     [?eMid "eventType" "went-home"])'
 ]);
 
-registerSiftingPattern('daydreamedAndDidNothing', [
+Felt.registerSiftingPattern('daydreamedAndDidNothing', [
   '?e1 eventType daydreamed',
   '?e2 eventType did-nothing',
   '(< ?e1 ?e2)',
@@ -126,7 +126,7 @@ registerSiftingPattern('daydreamedAndDidNothing', [
     [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('helpedSomeoneAndNiceConvo', [
+Felt.registerSiftingPattern('helpedSomeoneAndNiceConvo', [
   '?e1 eventType helped-somone',
   '?e2 eventType nice-convo',
   '(< ?e1 ?e2)',
@@ -139,7 +139,7 @@ registerSiftingPattern('helpedSomeoneAndNiceConvo', [
     [?eMid "eventType" "helped-someone"])'
 ]);
 
-registerSiftingPattern('hungOutAndChattedWithSomeone', [
+Felt.registerSiftingPattern('hungOutAndChattedWithSomeone', [
   '?e1 eventType hung-out',
   '(or [?e2 "eventType" "chatted-with-someone"]\
        [?e2 "eventType" "chatted-with-stranger"])',
@@ -153,7 +153,7 @@ registerSiftingPattern('hungOutAndChattedWithSomeone', [
     [?eMid "eventType" "hung-out"])'
 ]);
 
-registerSiftingPattern('meditatedAndAdventures', [
+Felt.registerSiftingPattern('meditatedAndAdventures', [
   '?e1 eventType meditated',
   '?e2 eventType adventured',
   '(< ?e1 ?e2)',
@@ -166,7 +166,7 @@ registerSiftingPattern('meditatedAndAdventures', [
     [?eMid "eventType" "meditated"])'
 ]);
 
-registerSiftingPattern('wasProductiveAndWentToAMeeting', [
+Felt.registerSiftingPattern('wasProductiveAndWentToAMeeting', [
   '?e1 eventType was-productive',
   '?e2 eventType work-meeting',
   '(< ?e1 ?e2)',
@@ -179,7 +179,7 @@ registerSiftingPattern('wasProductiveAndWentToAMeeting', [
     [?eMid "eventType" "was-productive"])'
 ]);
 
-registerSiftingPattern('avoidedResponsibilityAndDidNothing', [
+Felt.registerSiftingPattern('avoidedResponsibilityAndDidNothing', [
   '?e1 eventType avoided-responsibility',
   '?e2 eventType did-nothing',
   '(< ?e1 ?e2)',
@@ -192,7 +192,7 @@ registerSiftingPattern('avoidedResponsibilityAndDidNothing', [
     [?eMid "eventType" "avoided-responsibility"])'
 ]);
 
-registerSiftingPattern('sickAndMessedUp', [
+Felt.registerSiftingPattern('sickAndMessedUp', [
   '?e1 eventType sick',
   '?e2 eventType messed-up',
   '(< ?e1 ?e2)',
@@ -205,7 +205,7 @@ registerSiftingPattern('sickAndMessedUp', [
     [?eMid "eventType" "sick"])'
 ]);
 
-registerSiftingPattern('studiedAndWasProductive', [
+Felt.registerSiftingPattern('studiedAndWasProductive', [
   '?e1 eventType studied',
   '?e2 eventType was-productive',
   '(< ?e1 ?e2)',
@@ -218,7 +218,7 @@ registerSiftingPattern('studiedAndWasProductive', [
     [?eMid "eventType" "studied"])'
 ]);
 
-registerSiftingPattern('internetedAndDidNothing', [
+Felt.registerSiftingPattern('internetedAndDidNothing', [
   '?e1 eventType interneted',
   '?e2 eventType did-nothing',
   '(< ?e1 ?e2)',
@@ -231,7 +231,7 @@ registerSiftingPattern('internetedAndDidNothing', [
     [?eMid "eventType" "internet"])'
 ]);
 
-registerSiftingPattern('productiveAndWorkMeeting', [
+Felt.registerSiftingPattern('productiveAndWorkMeeting', [
   '?e1 eventType was-productive',
   '?e2 eventType work-meeting',
   '(< ?e1 ?e2)',
@@ -244,7 +244,7 @@ registerSiftingPattern('productiveAndWorkMeeting', [
     [?eMid "eventType" "productive"])'
 ]);
 
-registerSiftingPattern('hurtSelfAndMessedUp', [
+Felt.registerSiftingPattern('hurtSelfAndMessedUp', [
   '?e1 eventType hurt-self',
   '?e2 eventType messed-up',
   '(< ?e1 ?e2)',
@@ -257,7 +257,7 @@ registerSiftingPattern('hurtSelfAndMessedUp', [
     [?eMid "eventType" "hurt-self"])'
   ]);
 
-registerSiftingPattern('hobbyAndMeditated', [
+Felt.registerSiftingPattern('hobbyAndMeditated', [
   '?e1 eventType productive',
   '?e2 eventType meditated',
   '(< ?e1 ?e2)',
@@ -270,7 +270,7 @@ registerSiftingPattern('hobbyAndMeditated', [
     [?eMid "eventType" "productive"])'
 ]);
 
-registerSiftingPattern('choresAndWentToMeeting', [
+Felt.registerSiftingPattern('choresAndWentToMeeting', [
   '?e1 eventType chores',
   '?e2 eventType went-to-meeting',
   '(< ?e1 ?e2)',
@@ -283,7 +283,7 @@ registerSiftingPattern('choresAndWentToMeeting', [
     [?eMid "eventType" "chores"])'
 ]);
 
-registerSiftingPattern('fightAndAngryWithMe', [
+Felt.registerSiftingPattern('fightAndAngryWithMe', [
   '?e1 eventType fight',
   '?e2 eventType angry-with-me',
   '(< ?e1 ?e2)',
@@ -295,7 +295,7 @@ registerSiftingPattern('fightAndAngryWithMe', [
       [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('choresAndWentToClass', [
+Felt.registerSiftingPattern('choresAndWentToClass', [
   '?e1 eventType chores',
   '?e2 eventType went-to-class',
   '(< ?e1 ?e2)',
@@ -308,7 +308,7 @@ registerSiftingPattern('choresAndWentToClass', [
     [?eMid "eventType" "chores"])'
 ]);
 
-registerSiftingPattern('chattedWithSomeoneAndSomeoneBothered', [
+Felt.registerSiftingPattern('chattedWithSomeoneAndSomeoneBothered', [
   '?e1 eventType chatted-with-someone',
   '?e2 eventType someone-bothered',
   '(< ?e1 ?e2)',
@@ -320,7 +320,7 @@ registerSiftingPattern('chattedWithSomeoneAndSomeoneBothered', [
       [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('chattedWithSomeoneAndSomeoneWasJerk', [
+Felt.registerSiftingPattern('chattedWithSomeoneAndSomeoneWasJerk', [
   '?e1 eventType chatted-with-someone',
   '?e2 eventType someone-was-jerk',
   '(< ?e1 ?e2)',
@@ -332,7 +332,7 @@ registerSiftingPattern('chattedWithSomeoneAndSomeoneWasJerk', [
       [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('chattedWithSomeoneAndWasMean', [
+Felt.registerSiftingPattern('chattedWithSomeoneAndWasMean', [
   '?e1 eventType chatted-with-someone',
   '?e2 eventType was-mean',
   '(< ?e1 ?e2)',
@@ -344,7 +344,7 @@ registerSiftingPattern('chattedWithSomeoneAndWasMean', [
       [(< ?e1 ?eMid ?e2)])'
 ]);
 
-registerSiftingPattern('vacationedAndAdventured', [
+Felt.registerSiftingPattern('vacationedAndAdventured', [
   '?e1 eventType vacationed',
   '?e2 eventType adventured',
    '(< ?e1 ?e2)',
@@ -357,7 +357,7 @@ registerSiftingPattern('vacationedAndAdventured', [
     [?eMid "eventType" "vacationed"])'
 ]);
 
-registerSiftingPattern('tvAndLazy', [
+Felt.registerSiftingPattern('tvAndLazy', [
   '?e1 eventType watched',
   '?e2 eventType lazy',
   '(< ?e1 ?e2)',
@@ -370,7 +370,7 @@ registerSiftingPattern('tvAndLazy', [
     [?eMid "eventType" "watched"])'
 ]);
 
-registerSiftingPattern('playedGamesAndLazy', [
+Felt.registerSiftingPattern('playedGamesAndLazy', [
   '?e1 eventType played-game',
   '?e2 eventType lazy',
   '(< ?e1 ?e2)',
@@ -383,7 +383,7 @@ registerSiftingPattern('playedGamesAndLazy', [
     [?eMid "eventType" "internet"])'
 ]);
 
-registerSiftingPattern('playedGamesAndTV', [
+Felt.registerSiftingPattern('playedGamesAndTV', [
   '?e1 eventType played-game',
   '?e2 eventType watched',
   '(< ?e1 ?e2)',
@@ -396,7 +396,7 @@ registerSiftingPattern('playedGamesAndTV', [
     [?eMid "eventType" "played-game"])'
 ]);
 
-registerSiftingPattern('sleptInAndLazy', [
+Felt.registerSiftingPattern('sleptInAndLazy', [
   '?e1 eventType slept-in',
   '?e2 eventType lazy',
   '(< ?e1 ?e2)',
@@ -409,7 +409,7 @@ registerSiftingPattern('sleptInAndLazy', [
     [?eMid "eventType" "slept-in"])'
 ]);
 
-registerSiftingPattern('sleptInAndTV', [
+Felt.registerSiftingPattern('sleptInAndTV', [
   '?e1 eventType slept-in',
   '?e2 eventType watched',
   '(< ?e1 ?e2)',
@@ -422,7 +422,7 @@ registerSiftingPattern('sleptInAndTV', [
     [?eMid "eventType" "slept-in"])'
 ]);
 
-registerSiftingPattern('sleptInAndPlayedGames', [
+Felt.registerSiftingPattern('sleptInAndPlayedGames', [
   '?e1 eventType slept-in',
   '?e2 eventType played-game',
   '(< ?e1 ?e2)',
@@ -435,7 +435,7 @@ registerSiftingPattern('sleptInAndPlayedGames', [
     [?eMid "eventType" "slept-in"])'
 ]);
 
-registerSiftingPattern('visitedPeopleAndHungOutWith', [
+Felt.registerSiftingPattern('visitedPeopleAndHungOutWith', [
   '?e1 eventType visited-people',
   '?e2 eventType hung-out-with',
   '(< ?e1 ?e2)',

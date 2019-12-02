@@ -61,21 +61,58 @@ function renderSuggestedActions() {
 const allValues = ["comfort", "communalism", "science", "survival"];
 
 const authorGoalTypes = {
+  involveCharacterInPlot: {
+    text: "Involve character in plot",
+    params: ["character"],
+    query: function([char]) {
+      const charID = Sim.getCharacterIDByName(char);
+      return ["?event eventType ?et",
+              `(or [?event "actor" ${charID}]\
+                   [?event "target" ${charID}])`];
+    }
+  },
   castSuspicionOnCharacter: {
     text: "Cast suspicion on character",
-    params: ["character"]
+    params: ["character"],
+    query: function([char]) {
+      const charID = Sim.getCharacterIDByName(char);
+      return [`?event castsSuspicionOn ${charID}`];
+    }
   },
   dispelSuspicionOnCharacter: {
     text: "Dispel suspicion on character",
-    params: ["character"]
+    params: ["character"],
+    query: function([char]) {
+      const charID = Sim.getCharacterIDByName(char);
+      return [`?event castsSuspicionOn ${charID}`];
+    },
+    invertQuery: true
   },
   escalateTensionBetweenCharacters: {
     text: "Escalate tension between characters",
-    params: ["character", "character"]
+    params: ["character", "character"],
+    query: function([char1, char2]) {
+      const charID1 = Sim.getCharacterIDByName(char1);
+      const charID2 = Sim.getCharacterIDByName(char2);
+      return ["?event eventType ?et",
+              `(or [(harmEvent ?event ${charID1} ${charID2})]
+                   [(harmEvent ?event ${charID2} ${charID1})]
+                   [(negativeJudgment ${charID1} ${charID2})]
+                   [(negativeJudgment ${charID2} ${charID1})])`];
+    }
   },
   defuseTensionBetweenCharacters: {
     text: "Defuse tension between characters",
-    params: ["character", "character"]
+    params: ["character", "character"],
+    query: function([char1, char2]) {
+      const charID1 = Sim.getCharacterIDByName(char1);
+      const charID2 = Sim.getCharacterIDByName(char2);
+      return ["?event eventType ?et",
+              `(or [(helpEvent ?event ${charID1} ${charID2})]
+                   [(helpEvent ?event ${charID2} ${charID1})]
+                   [(positiveJudgment ${charID1} ${charID2})]
+                   [(positiveJudgment ${charID2} ${charID1})])`];
+    }
   },
   escalateTensionBetweenValues: {
     text: "Escalate tension between values",
@@ -99,9 +136,30 @@ for (let goalType of Object.keys(authorGoalTypes)) {
 }
 
 let authorGoals = [
-  {type: "castSuspicionOnCharacter", params: ["Joe"]},
+  {type: "castSuspicionOnCharacter", params: [Sim.getAllCharacterNames()[0]]},
   {type: "escalateTensionBetweenValues", params: ["comfort", "survival"]}
 ];
+
+// Given a potential action and an author goal to evaluate it against,
+// return a score representing this potential action's direct contribution to the goal.
+// Currently we do this by counting how many results there are for the goal's query
+// before and after this action is performed, then returning the difference.
+function evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal) {
+  const {action, bindings} = potentialAction;
+  const event = Felt.realizeEvent(action, bindings);
+  const goalType = authorGoalTypes[authorGoal.type];
+  const query = goalType.query(authorGoal.params);
+  const pattern = Felt.parseSiftingPattern(query);
+  const beforeDB = Sim.getDB();
+  const beforeResults = Felt.runSiftingPattern(beforeDB, pattern).length;
+  const afterDB = Felt.addEvent(beforeDB, event);
+  const afterResults = Felt.runSiftingPattern(afterDB, pattern).length;
+  const score = goalType.invertQuery ? beforeResults - afterResults : afterResults - beforeResults;
+  if (score !== 0) {
+    console.log(potentialAction, authorGoal, score);
+  }
+  return score;
+}
 
 function renderAuthorGoalEditor() {
   const charNames = Sim.getAllCharacterNames();
