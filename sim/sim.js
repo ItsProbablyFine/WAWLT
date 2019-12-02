@@ -149,6 +149,10 @@ return {
   setPlayerName: function(playerName) {
     gameDB = updateProperty(gameDB, 1, 'name', playerName);
   },
+  // Get a list of all character names.
+  getAllCharacterNames: function () {
+    return getAllCharacterNames(gameDB);
+  },
   //
   getSuggestedActions: function() {
     const allActions = Object.values(actionLibrary);
