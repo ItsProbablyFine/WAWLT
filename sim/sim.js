@@ -1,7 +1,7 @@
 /// HTML include order for sim JS files:
 /// datascript
 /// util
-/// engine
+/// felt
 /// {sim,actions,effects,siftpatterns}
 
 window.Sim = (function(){
