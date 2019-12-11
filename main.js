@@ -128,8 +128,7 @@ const authorGoalTypes = {
     params: ["character"],
     evaluate: function(goalParams, event) {
       const castSuspicionScore = authorGoalTypes.castSuspicionOnCharacter.evaluate(goalParams, event);
-      if (castSuspicionScore !== 0) return -castSuspicionScore;
-      return 0;
+      return -castSuspicionScore;
     }
   },
   escalateTensionBetweenCharacters: {
@@ -152,8 +151,7 @@ const authorGoalTypes = {
     params: ["character", "character"],
     evaluate: function(goalParams, event) {
       const escalateTensionScore = authorGoalTypes.escalateTensionBetweenCharacters.evaluate(goalParams, event);
-      if (escalateTensionScore !== 0) return -escalateTensionScore;
-      return 0;
+      return -escalateTensionScore;
     }
   },
   escalateTensionBetweenValues: {
