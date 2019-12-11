@@ -117,9 +117,9 @@ const authorGoalTypes = {
     params: ["character"],
     evaluate: function([char], event) {
       const charID = Sim.getCharacterIDByName(char);
-      if (event.eventType === "betray" && event.actor === charID) return 10;
-      if (event.eventType === "betray" && event.target === charID) return 5;
-      if (event.eventType === "showProject_hated" && event.target === charID) return 5;
+      if (event.eventType === "betray" && event.actor === charID) return 15;
+      if (event.eventType === "betray" && event.target === charID) return 10;
+      if (event.eventType === "showProject_hated" && event.target === charID) return 7;
       return 0;
     }
   },
