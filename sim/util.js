@@ -1,5 +1,12 @@
 /// UTILITY FUNCTIONS
 
+// Return a random integer between min (inclusive) and max (inclusive).
+function randInt(min, max) {
+  const range = max - min;
+  const rand = Math.floor(Math.random() * (range + 1));
+  return min + rand;
+}
+
 // Return a random item from a list.
 function randNth(items){
   return items[Math.floor(Math.random()*items.length)];

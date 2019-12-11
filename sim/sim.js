@@ -40,15 +40,85 @@ let allNames = [
   'Victor', 'Vincent'
 ];
 
+const allValues = [
+  "authority",       // hierarchies are good! they're the only thing between us and ANARCHY. Chesterton's Fence!
+  "careerism",       // climbin' the ladder
+  "comfort",         // I wanna be comfortable and you should too, because it's important for our health!
+  "communalism",     // everything for the community, nothing for the self!
+  "curiosity",       // I do stuff cause I'm interested in seeing what will happen
+  "frugality",       // I will never pay for Sublime Text
+  "impact",          // I want to CHANGE THE WORLD through my SCIENCE
+  "progress",        // the system is broken, but we can tear it down and rebuild it better. embrace change!
+  "self-expression", // I have feelings and you need to know about them
+  "survival"         // I'm just tryna make my way in the big ol' dangerous world
+];
+
+const allCurses = [
+  "aesthetic commitment", // really strongly values a particular aesthetic that others don't share
+  "awkward",              // not good at talking to other human people
+  "can't say no",         // i mean
+  "chaotic neutral",      // does unexpected things just to do them
+  "chip on shoulder",     // WILL fight you
+  "conflict aversion",    // will not fight ANYONE even when it's important
+  "contrarianism",        // if you say yes i say no. will happily flip discussion positions halfway through
+  "distractibility",      // starts too many new things! doesn't finish old ones!
+  "hesitance",            // reluctance to commit to any particular course of action. sylvia plath fig tree thing!
+  "insecurity",           // can be "too intimidated to talk" or "must prove myself, will talk over everyone!"
+  "laziness",             // doesn't ever actually work on anything!
+  "misunderstood",        // often misinterpreted, hard to understand sometimes, can't validate to target communities
+  "perfectionism",        // fear of failure leads to lack of visible progress
+  "precarity",            // got nothin to fall back on if anything goes wrong
+  "professionalism",      // y'know, d-don't say - swears
+  "work ethic"            // works TOO HARD at price of own well-being at times
+];
+
+const weightedAllRoles = [
+  "undergrad",
+  "master's student",
+  "master's student",
+  "master's student",
+  "master's student",
+  "PhD student",
+  "PhD student",
+  "PhD student",
+  "PhD student",
+  "PhD student",
+  "PhD student",
+  "postdoc",
+  "postdoc",
+  "assistant professor",
+  "assistant professor",
+  "assistant professor",
+  "assistant professor",
+  "associate professor",
+  "full professor",
+  "full professor",
+  "emeritus professor",
+  "venue staff"
+];
+
+const allHooks = [
+  "secret expert",
+  "social media famous"
+];
+
 function generateCharacter(db) {
-  let takenNames = getAllCharacterNames(db);
-  let validNames = allNames.filter((n) => takenNames.indexOf(n) === -1);
-  return createEntity(db, {
+  const takenNames = getAllCharacterNames(db);
+  const validNames = allNames.filter((n) => takenNames.indexOf(n) === -1);
+  const curse = randNth([randNth(allCurses), null]);
+  const hook = randNth([randNth(allHooks), null, null, null, null, null, null, null]);
+  const entity = {
     type: 'char',
     name: randNth(validNames),
+    values: shuffle(allValues).slice(0, 2),
+    curses: shuffle(allCurses).slice(0, randInt(1, 2)),
+    role: randNth(weightedAllRoles),
     romanceTarget: 'nobody',
-    romanceState: 'single'
-  });
+    romanceState: 'single',
+  };
+  if (hook) entity.hook = hook;
+  console.log(entity);
+  return createEntity(db, entity);
 }
 
 function generateAttitude(db) {
