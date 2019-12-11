@@ -12,17 +12,11 @@ function evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal) {
   const {action, bindings} = potentialAction;
   const event = Felt.realizeEvent(action, bindings);
   const goalType = authorGoalTypes[authorGoal.type];
-  if (!goalType.query) {
-    console.warn(`No query defined for author goal type ${authorGoal.type}!`);
+  if (!goalType.evaluate) {
+    console.warn(`No action evaluation heuristic defined for author goal type ${authorGoal.type}!`);
     return 0;
   }
-  const query = goalType.query(authorGoal.params);
-  const pattern = Felt.parseSiftingPattern(query);
-  const beforeDB = Sim.getDB();
-  const beforeResults = Felt.runSiftingPattern(beforeDB, pattern).length;
-  const afterDB = Felt.addEvent(beforeDB, event);
-  const afterResults = Felt.runSiftingPattern(afterDB, pattern).length;
-  const score = goalType.invertQuery ? beforeResults - afterResults : afterResults - beforeResults;
+  const score = goalType.evaluate(authorGoal.params, event, Sim.getDB());
   /*
   if (score !== 0) {
     console.log(potentialAction, authorGoal, score);
@@ -111,54 +105,55 @@ const authorGoalTypes = {
   involveCharacterInPlot: {
     text: "Involve character in plot",
     params: ["character"],
-    query: function([char]) {
+    evaluate: function([char], event) {
       const charID = Sim.getCharacterIDByName(char);
-      return ["?event eventType ?et",
-              `(or [?event "actor" ${charID}]\
-                   [?event "target" ${charID}])`];
+      if (event.actor === charID) return 5;
+      if (event.target === charID) return 5;
+      return 0;
     }
   },
   castSuspicionOnCharacter: {
     text: "Cast suspicion on character",
     params: ["character"],
-    query: function([char]) {
+    evaluate: function([char], event) {
       const charID = Sim.getCharacterIDByName(char);
-      return [`?event castsSuspicionOn ${charID}`];
+      if (event.eventType === "betray" && event.actor === charID) return 10;
+      if (event.eventType === "betray" && event.target === charID) return 5;
+      if (event.eventType === "showProject_hated" && event.target === charID) return 5;
+      return 0;
     }
   },
   dispelSuspicionOnCharacter: {
     text: "Dispel suspicion on character",
     params: ["character"],
-    query: function([char]) {
-      const charID = Sim.getCharacterIDByName(char);
-      return [`?event castsSuspicionOn ${charID}`];
-    },
-    invertQuery: true
+    evaluate: function(goalParams, event) {
+      const castSuspicionScore = authorGoalTypes.castSuspicionOnCharacter.evaluate(goalParams, event);
+      if (castSuspicionScore !== 0) return -castSuspicionScore;
+      return 0;
+    }
   },
   escalateTensionBetweenCharacters: {
     text: "Escalate tension between characters",
     params: ["character", "character"],
-    query: function([char1, char2]) {
+    evaluate: function([char1, char2], event) {
       const charID1 = Sim.getCharacterIDByName(char1);
       const charID2 = Sim.getCharacterIDByName(char2);
-      return ["?event eventType ?et",
-              `(or [(harmEvent ?event ${charID1} ${charID2})]
-                   [(harmEvent ?event ${charID2} ${charID1})]
-                   [(negativeJudgment ${charID1} ${charID2})]
-                   [(negativeJudgment ${charID2} ${charID1})])`];
+      if (event.eventType === "betray" && event.actor === charID1 && event.target === charID2) return 20;
+      if (event.eventType === "betray" && event.actor === charID2 && event.target === charID1) return 20;
+      if (event.eventType === "showProject_hated" && event.actor === charID1 && event.target === charID2) return 10;
+      if (event.eventType === "showProject_hated" && event.actor === charID2 && event.target === charID1) return 10;
+      if (event.eventType === "showProject_loved" && event.actor === charID1 && event.target === charID2) return -10;
+      if (event.eventType === "showProject_loved" && event.actor === charID2 && event.target === charID1) return -10;
+      return 0;
     }
   },
   defuseTensionBetweenCharacters: {
     text: "Defuse tension between characters",
     params: ["character", "character"],
-    query: function([char1, char2]) {
-      const charID1 = Sim.getCharacterIDByName(char1);
-      const charID2 = Sim.getCharacterIDByName(char2);
-      return ["?event eventType ?et",
-              `(or [(helpEvent ?event ${charID1} ${charID2})]
-                   [(helpEvent ?event ${charID2} ${charID1})]
-                   [(positiveJudgment ${charID1} ${charID2})]
-                   [(positiveJudgment ${charID2} ${charID1})])`];
+    evaluate: function(goalParams, event) {
+      const escalateTensionScore = authorGoalTypes.escalateTensionBetweenCharacters.evaluate(goalParams, event);
+      if (escalateTensionScore !== 0) return -escalateTensionScore;
+      return 0;
     }
   },
   escalateTensionBetweenValues: {
@@ -258,7 +253,20 @@ function renderAuthorGoalEditor() {
     authorGoalTypeSelect.onchange = function(ev) {
       const select = ev.target;
       const index = parseInt(select.parentNode.dataset.index); // get index from parent
-      authorGoals[index].type = select.options[select.selectedIndex].value;
+      const goalTypeName = select.options[select.selectedIndex].value;
+      authorGoals[index].type = goalTypeName;
+      // populate initial goal params as well
+      authorGoals[index].params = [];
+      for (let paramType of authorGoalTypes[goalTypeName].params) {
+        if (paramType === "character") {
+          authorGoals[index].params.push(Sim.getAllCharacterNames()[0]);
+        } else if (paramType === "value") {
+          authorGoals[index].params.push("comfort");
+        } else {
+          console.warn(`Invalid author goal param type: ${paramType}`);
+          authorGoals[index].params.push("");
+        }
+      }
       renderAuthorGoalEditor();
     };
   }
