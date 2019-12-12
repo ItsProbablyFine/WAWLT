@@ -158,7 +158,7 @@ let gameDB = datascript.empty_db(schema);
 for (let i = 0; i < 10; i++){
   gameDB = generateCharacter(gameDB);
 }
-for (let i = 0; i < 20; i++){
+for (let i = 0; i < 50; i++){
   gameDB = generateAttitude(gameDB);
 }
 for (let charPair of getAllCharacterPairs(gameDB)) {

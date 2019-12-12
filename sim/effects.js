@@ -20,6 +20,12 @@ Felt.registerEffectHandler('startProject', function(db, effect) {
   });
 });
 
+
+Felt.registerEffectHandler('joinProject', function(db, effect) {
+  Felt.checkEffectKeys(effect, ['project', 'contributor']);
+  return updateProperty(db, effect.project, 'projectContributor', effect.contributor);
+});
+
 Felt.registerEffectHandler('updateProjectState', function(db, effect) {
   Felt.checkEffectKeys(effect, ['project', 'newState']);
   return updateProperty(db, effect.project, 'state', effect.newState);

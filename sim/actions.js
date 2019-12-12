@@ -83,10 +83,16 @@ Felt.registerAction('startCollabProject', {
   tagline: '?n1 and ?n2: Start new collaborative project',
   where: [
     // you gotta like someone to voluntarily start a project with them
-    '?like "type" "attitude"',
-    '?like "charge" "positive"',
-    '?like "source" ?c1',
-    '?like "target" ?c2',
+    '?like12 "type" "attitude"',
+    '?like12 "charge" "positive"',
+    '?like12 "source" ?c1',
+    '?like12 "target" ?c2',
+    // liking gotta be reciprocal
+    '?like21 "type" "attitude"',
+    '?like21 "charge" "positive"',
+    '?like21 "source" ?c2',
+    '?like21 "target" ?c1',
+    // extra info for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
   ],
@@ -100,6 +106,44 @@ Felt.registerAction('startCollabProject', {
         {type: 'startProject', contributors: [vars.c1, vars.c2], projectType: projectType}
       ],
       text: `🎨 ${vars.n1} and ${vars.n2} started a new ${projectType} project together!`,
+      tags: ['projects']
+    };
+  }
+});
+
+Felt.registerAction('persuadePersonToJoinProject', {
+  tagline: '?n1: Persuade ?n2 to join project ?proj',
+  where: [
+    // there's an active project! ?c1 is on it!
+    '?proj "projectContributor" ?c1',
+    '?proj "state" "active"',
+    // ?c2 is not!
+    '?c2 "type" "char"', // gotta do this because apparently order of lvar declaration matters sometimes?
+    '(not [?proj "projectContributor" ?c2])',
+    // c1 likes c2 (wouldn't wanna recruit them otherwise!)
+    '?like12 "type" "attitude"',
+    '?like12 "charge" "positive"',
+    '?like12 "source" ?c1',
+    '?like12 "target" ?c2',
+    // c2 likes c1 (wouldn't join otherwise!)
+    '?like21 "type" "attitude"',
+    '?like21 "charge" "positive"',
+    '?like21 "source" ?c2',
+    '?like21 "target" ?c1',
+    // extra information for display purposes
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2',
+    '?proj "projectType" ?projtype'
+  ],
+  event: function(vars){
+    console.log("persuadePersonToJoinProject", vars);
+    return {
+      actor: vars.c1,
+      target: vars.c2,
+      effects: [
+        {type: 'joinProject', project: vars.proj, contributor: vars.c2}
+      ],
+      text: `🎨 ${vars.n1} persuaded ${vars.n2} to join their ${vars.projtype} project ${vars.proj}!`,
       tags: ['projects']
     };
   }
