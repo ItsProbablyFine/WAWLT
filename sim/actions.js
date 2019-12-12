@@ -59,7 +59,7 @@ Felt.registerAction('seeCuteAnimal', {
 
 let allProjectTypes = ['art','craft','poetry','programming','research','writing'];
 
-Felt.registerAction('startProject', {
+Felt.registerAction('startSoloProject', {
   tagline: '?n1: Start new project',
   where: [
     '?c1 "name" ?n1'
@@ -71,9 +71,35 @@ Felt.registerAction('startProject', {
       // TODO need to specify project: somehow, but can't, because its ID is only generated
       // once the effects are run
       effects: [
-        {type: 'startProject', owner: vars.c1, projectType: projectType}
+        {type: 'startProject', contributors: [vars.c1], projectType: projectType}
       ],
       text: "🎨 " + vars.n1 + " started a new " + projectType + " project!",
+      tags: ['projects']
+    };
+  }
+});
+
+Felt.registerAction('startCollabProject', {
+  tagline: '?n1 and ?n2: Start new collaborative project',
+  where: [
+    // you gotta like someone to voluntarily start a project with them
+    '?like "type" "attitude"',
+    '?like "charge" "positive"',
+    '?like "source" ?c1',
+    '?like "target" ?c2',
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2'
+  ],
+  event: function(vars){
+    let projectType = randNth(allProjectTypes);
+    return {
+      actor: vars.c1,
+      // TODO need to specify project: somehow, but can't, because its ID is only generated
+      // once the effects are run
+      effects: [
+        {type: 'startProject', contributors: [vars.c1, vars.c2], projectType: projectType}
+      ],
+      text: `🎨 ${vars.n1} and ${vars.n2} started a new ${projectType} project together!`,
       tags: ['projects']
     };
   }
@@ -83,7 +109,7 @@ Felt.registerAction('makeProgressOnProject', {
   tagline: '?n1: Make progress on project ?proj',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"'
   ],
@@ -102,7 +128,7 @@ Felt.registerAction('workFruitlesslyOnProject', {
   tagline: '?n1: Work fruitlessly on project ?proj',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"'
   ],
@@ -117,11 +143,12 @@ Felt.registerAction('workFruitlesslyOnProject', {
   })
 });
 
+// TODO abandonment shouldn't make project inactive if there's still non-abandoned contributors
 Felt.registerAction('abandonProject', {
   tagline: '?n1: Abandon project ?proj',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"'
   ],
@@ -137,11 +164,12 @@ Felt.registerAction('abandonProject', {
   })
 });
 
+// TODO abandonment shouldn't make project inactive if there's still non-abandoned contributors
 Felt.registerAction('resumeProject', {
   tagline: '?n1: Resume work on project ?proj',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "inactive"'
   ],
@@ -158,10 +186,10 @@ Felt.registerAction('resumeProject', {
 });
 
 Felt.registerAction('finishProject', {
-  tagline: '?n1: Finish project ?proj',
+  tagline: '?n1: Put the finishing touches on project ?proj',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"',
     '?proj "dramaLevel" ?d',
@@ -182,7 +210,7 @@ Felt.registerAction('showProject_loved', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts positively',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"',
     '?c2 "type" "char"',
@@ -206,7 +234,7 @@ Felt.registerAction('showProject_neutral', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts neutrally',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"',
     '?c2 "type" "char"',
@@ -230,7 +258,7 @@ Felt.registerAction('showProject_hated', {
   tagline: '?n1: Show project ?proj to ?n2, who reacts negatively',
   where: [
     '?c1 "name" ?n1',
-    '?proj "owner" ?c1',
+    '?proj "projectContributor" ?c1',
     '?proj "projectType" ?projtype',
     '?proj "state" "active"',
     '?c2 "type" "char"',

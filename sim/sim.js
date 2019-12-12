@@ -150,6 +150,7 @@ let schema = {
   cause:  {':db/valueType': ':db.type/ref'},
   source: {':db/valueType': ':db.type/ref'},
   target: {':db/valueType': ':db.type/ref'},
+  projectContributor: {':db/valueType': ':db.type/ref', ':db/cardinality': ':db.cardinality/many'},
   tag:    {':db/cardinality': ':db.cardinality/many'}
 };
 let gameDB = datascript.empty_db(schema);
