@@ -41,16 +41,16 @@ let allNames = [
 ];
 
 const allValues = [
-  "authority",       // hierarchies are good! they're the only thing between us and ANARCHY. Chesterton's Fence!
-  "careerism",       // climbin' the ladder
-  "comfort",         // I wanna be comfortable and you should too, because it's important for our health!
-  "communalism",     // everything for the community, nothing for the self!
-  "curiosity",       // I do stuff cause I'm interested in seeing what will happen
-  "frugality",       // I will never pay for Sublime Text
-  "impact",          // I want to CHANGE THE WORLD through my SCIENCE
-  "progress",        // the system is broken, but we can tear it down and rebuild it better. embrace change!
-  "self-expression", // I have feelings and you need to know about them
-  "survival"         // I'm just tryna make my way in the big ol' dangerous world
+  "authority",   // hierarchies are good! they're the only thing between us and ANARCHY. Chesterton's Fence!
+  "careerism",   // climbin' the ladder
+  "comfort",     // I wanna be comfortable and you should too, because it's important for our health!
+  "communalism", // everything for the community, nothing for the self!
+  "curiosity",   // I do stuff cause I'm interested in seeing what will happen
+  "expression",  // people in general should express themselves
+  "frugality",   // I will never pay for Sublime Text
+  "impact",      // I want to CHANGE THE WORLD through my SCIENCE
+  "progress",    // the system is broken, but we can tear it down and rebuild it better. embrace change!
+  "survival"     // I'm just tryna make my way in the big ol' dangerous world
 ];
 
 const allCurses = [
@@ -66,6 +66,7 @@ const allCurses = [
   "insecurity",           // can be "too intimidated to talk" or "must prove myself, will talk over everyone!"
   "laziness",             // doesn't ever actually work on anything!
   "misunderstood",        // often misinterpreted, hard to understand sometimes, can't validate to target communities
+  "people pleaser",       // care too much about pleasing people. sorry cop
   "perfectionism",        // fear of failure leads to lack of visible progress
   "precarity",            // got nothin to fall back on if anything goes wrong
   "professionalism",      // y'know, d-don't say - swears
