@@ -73,6 +73,13 @@ function updateProperties(db, eid, props) {
   return db;
 }
 
+// Given the DB, an EID, a property to update, and a value, return an updated DB
+// without the specified property.
+function deleteProperty(db, eid, prop, val) {
+  // TODO assert eid is a valid EID, prop is a string, val is a valid DB value
+  return datascript.db_with(db, [[':db/retract', eid, prop, val]]);
+}
+
 /*
 // Given the DB and an EID, return an updated DB with the specified entity removed.
 function deleteEntity(db, eid) {

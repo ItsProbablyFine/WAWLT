@@ -26,6 +26,11 @@ Felt.registerEffectHandler('joinProject', function(db, effect) {
   return updateProperty(db, effect.project, 'projectContributor', effect.contributor);
 });
 
+Felt.registerEffectHandler('leaveProject', function(db, effect) {
+  Felt.checkEffectKeys(effect, ['project', 'contributor']);
+  return deleteProperty(db, effect.project, 'projectContributor', effect.contributor);
+});
+
 Felt.registerEffectHandler('updateProjectState', function(db, effect) {
   Felt.checkEffectKeys(effect, ['project', 'newState']);
   return updateProperty(db, effect.project, 'state', effect.newState);

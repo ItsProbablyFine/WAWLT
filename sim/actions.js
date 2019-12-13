@@ -149,6 +149,56 @@ Felt.registerAction('persuadePersonToJoinProject', {
   }
 });
 
+Felt.registerAction('leaveProjectDueToWorkload', {
+  tagline: '?n1: Leave project ?proj due to having too much work to do',
+  where: [
+    // there's an active project! ?c1 is on it!
+    '?proj "projectContributor" ?c1',
+    '?proj "state" "active"',
+    // extra information for display purposes
+    '?c1 "name" ?n1',
+    '?proj "projectType" ?projtype'
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    project: vars.proj,
+    effects: [
+      {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
+    ],
+    text: `🎨 ${vars.n1} left project ${vars.proj} because they had too much work to do!`,
+    tags: ['projects']
+  })
+});
+
+Felt.registerAction('leaveProjectDueToPersonalDifferences', {
+  tagline: '?n1: Leave project ?proj due to disagreements with ?n2',
+  where: [
+    // there's an active project! ?c1 is on it!
+    '?proj "projectContributor" ?c1',
+    '?proj "projectContributor" ?c2',
+    '?proj "state" "active"',
+    // personal differences
+    '?dislike "type" "attitude"',
+    '?dislike "charge" "negative"',
+    '?dislike "source" ?c1',
+    '?dislike "target" ?c2',
+    // extra information for display purposes
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2',
+    '?proj "projectType" ?projtype',
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    target: vars.c2,
+    project: vars.proj,
+    effects: [
+      {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
+    ],
+    text: `🎨 ${vars.n1} left project ${vars.proj} because they don't like working with ${vars.n2}`,
+    tags: ['projects']
+  })
+});
+
 Felt.registerAction('makeProgressOnProject', {
   tagline: '?n1: Make progress on project ?proj',
   where: [
