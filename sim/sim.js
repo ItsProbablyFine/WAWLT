@@ -17,6 +17,13 @@ function getAllCharacterPairs(db) {
                         :where [?c1 "type" "char"] [?c2 "type" "char"] [(not= ?c1 ?c2)]]', db);
 }
 
+// Like getAllCharacterPairs, but will only include [1 2] rather than both [1 2] and [2 1].
+function getAllCharacterPairsUndirected(db) {
+  return datascript.q('[:find ?c1 ?c2 \
+                        :where [?c1 "type" "char"] [?c2 "type" "char"] \
+                               [(not= ?c1 ?c2)] [(< ?c1 ?c2)]]', db);
+}
+
 function getCharacterIDByName(db, name) {
   return datascript.q(`[:find ?c :where [?c "type" "char"] [?c "name" "${name}"]]`, db)[0][0];
 }
@@ -158,6 +165,11 @@ let gameDB = datascript.empty_db(schema);
 
 for (let i = 0; i < 10; i++){
   gameDB = generateCharacter(gameDB);
+}
+for (let [char1, char2] of getAllCharacterPairsUndirected(gameDB)) {
+  const pair1to2 = [char1, char2];
+  const pair2to1 = [char2, char1];
+  // TODO generate relationships
 }
 for (let i = 0; i < 50; i++){
   gameDB = generateAttitude(gameDB);
