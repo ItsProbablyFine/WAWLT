@@ -118,8 +118,8 @@ function generateCharacter(db) {
   const entity = {
     type: 'char',
     name: randNth(validNames),
-    values: shuffle(allValues).slice(0, 2),
-    curses: shuffle(allCurses).slice(0, randInt(1, 2)),
+    value: shuffle(allValues).slice(0, 2),
+    curse: shuffle(allCurses).slice(0, randInt(1, 2)),
     role: randNth(weightedAllRoles),
     romanceTarget: 'nobody',
     romanceState: 'single',
@@ -154,12 +154,16 @@ function generateAffection(db, char1, char2) {
 
 let schema = {
   //exampleAttr: {':db/cardinality': ':db.cardinality/many'},
+  // character traits
+  curse:  {':db/cardinality': ':db.cardinality/many'},
+  value:  {':db/cardinality': ':db.cardinality/many'},
+  // other stuff
   actor:  {':db/valueType': ':db.type/ref'},
   cause:  {':db/valueType': ':db.type/ref'},
   source: {':db/valueType': ':db.type/ref'},
   target: {':db/valueType': ':db.type/ref'},
   projectContributor: {':db/valueType': ':db.type/ref', ':db/cardinality': ':db.cardinality/many'},
-  tag:    {':db/cardinality': ':db.cardinality/many'}
+  tag:    {':db/cardinality': ':db.cardinality/many'},
 };
 let gameDB = datascript.empty_db(schema);
 
