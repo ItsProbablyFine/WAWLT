@@ -135,7 +135,7 @@ function registerAction(name, action) {
   action.wherePart = pattern.wherePart;
   if (action.find) {
     action.lvars = action.find.trim().split(/\s+/.map(s => s.substring(1)));
-    action.query = '[:find ' + action.find + ' :where ' + pattern.wherePart + ']';
+    action.query = `[:find ${action.find} :in $ % :where ${pattern.wherePart}]`;
     action.findPart = action.find;
   } else {
     action.lvars = pattern.lvars;
