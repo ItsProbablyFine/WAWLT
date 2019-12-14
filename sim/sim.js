@@ -6,6 +6,24 @@
 
 window.Sim = (function(){
 
+/// QUERY RULES
+
+Felt.setQueryRules(`[
+
+[(eventSequence ?e1 ?e2)
+ [?e1 "type" "event"] [?e2 "type" "event"]
+ [(< ?e1 ?e2)]]
+
+[(likes ?c1 ?c2)
+ [?ship "type" "ship"] [?ship "source" ?c1] [?ship "target" ?c2]
+ [?ship "charge" ?charge] [(> ?charge 0)]]
+
+[(dislikes ?c1 ?c2)
+ [?ship "type" "ship"] [?ship "source" ?c1] [?ship "target" ?c2]
+ [?ship "charge" ?charge] [(< ?charge 0)]]
+
+]`);
+
 /// GENERATION FUNCTIONS
 
 function getAllCharacterNames(db) {
@@ -188,10 +206,22 @@ let gameDB = datascript.empty_db(schema);
 for (let i = 0; i < 10; i++){
   gameDB = generateCharacter(gameDB);
 }
+// generate relationships
 for (let [char1, char2] of getAllCharacterPairsUndirected(gameDB)) {
   const pair1to2 = [char1, char2];
   const pair2to1 = [char2, char1];
-  // TODO generate relationships
+  gameDB = createEntity(gameDB, {
+    type: 'ship',
+    charge: randInt(-5, 5),
+    source: char1,
+    target: char2
+  });
+  gameDB = createEntity(gameDB, {
+    type: 'ship',
+    charge: randInt(-5, 5),
+    source: char2,
+    target: char1
+  });
 }
 for (let i = 0; i < 50; i++){
   gameDB = generateAttitude(gameDB);

@@ -1,13 +1,9 @@
 Felt.registerAction('betray', {
   tagline: '?n1: Betray ?n2',
   where: [
-    '?dislike "type" "attitude"',
-    '?dislike "charge" "negative"',
-    '?dislike "source" ?c1',
-    '?dislike "target" ?c2',
+    '(dislikes ?c1 ?c2)',
     '?c1 "name" ?n1',
-    '?c2 "name" ?n2',
-    '(not= ?c1 ?c2)' // in case we want to permit self-dislike but not self-betrayal :(
+    '?c2 "name" ?n2'
   ],
   event: (vars) => ({
     actor: vars.c1,
@@ -84,15 +80,9 @@ Felt.registerAction('startCollabProject', {
   tagline: '?n1 and ?n2: Start new collaborative project',
   where: [
     // you gotta like someone to voluntarily start a project with them
-    '?like12 "type" "attitude"',
-    '?like12 "charge" "positive"',
-    '?like12 "source" ?c1',
-    '?like12 "target" ?c2',
+    '(likes ?c1 ?c2)',
     // liking gotta be reciprocal
-    '?like21 "type" "attitude"',
-    '?like21 "charge" "positive"',
-    '?like21 "source" ?c2',
-    '?like21 "target" ?c1',
+    '(likes ?c2 ?c1)',
     // extra info for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
@@ -123,15 +113,9 @@ Felt.registerAction('persuadePersonToJoinProject', {
     '?c2 "type" "char"', // gotta do this because apparently order of lvar declaration matters sometimes?
     '(not [?proj "projectContributor" ?c2])',
     // c1 likes c2 (wouldn't wanna recruit them otherwise!)
-    '?like12 "type" "attitude"',
-    '?like12 "charge" "positive"',
-    '?like12 "source" ?c1',
-    '?like12 "target" ?c2',
+    '(likes ?c1 ?c2)',
     // c2 likes c1 (wouldn't join otherwise!)
-    '?like21 "type" "attitude"',
-    '?like21 "charge" "positive"',
-    '?like21 "source" ?c2',
-    '?like21 "target" ?c1',
+    '(likes ?c2 ?c1)',
     // extra information for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2',
@@ -180,10 +164,7 @@ Felt.registerAction('leaveProjectDueToPersonalDifferences', {
     '?proj "projectContributor" ?c2',
     '?proj "state" "active"',
     // personal differences
-    '?dislike "type" "attitude"',
-    '?dislike "charge" "negative"',
-    '?dislike "source" ?c1',
-    '?dislike "target" ?c2',
+    '(dislikes ?c1 ?c2)',
     // extra information for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2',

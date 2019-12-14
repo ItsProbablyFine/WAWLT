@@ -45,8 +45,9 @@ function evaluatePotentialAction(potentialAction) {
 
 function renderActionTagline(action, bindings) {
   let tagline = action.tagline || '';
-  // we gotta sort the lvars by length so we don't substitute them in the wrong order
-  // and mess up substitution of lvars whose names include the names of other lvars as substrings
+  // Sometimes there are lvars with longer names that include shorter lvar names as substrings.
+  // If we substitute the shorter ones first, it'll mess up the substitution of the longer ones.
+  // To work around this, we first sort the lvars by name length before performing substitution.
   const lvars = Object.keys(bindings).filter(x => Number.isNaN(parseInt(x))); // only non-numberish keys
   const sortedLvars = lvars.sort((a, b) => b.length - a.length);
   for (let lvar of sortedLvars) {
@@ -96,7 +97,6 @@ function renderSuggestedActions() {
     if (suggested.authorGoals.length > 0) {
       html += `<ul class="contributing-author-goals">`;
       for (let {goal, score} of suggested.authorGoals) {
-        console.log(goal);
         html += `<li>${goal.type} ${goal.params}: ${score}</li>`;
       }
       html += '</ul>';

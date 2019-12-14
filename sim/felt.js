@@ -1,5 +1,21 @@
 window.Felt = (function(){
 
+/// REGISTER QUERY RULES
+
+let queryRuleNames = [];
+
+// Given a string specifying a set of DataScript query rules,
+// pre-process these rules and make them available to sifting patterns.
+function setQueryRules(rules) {
+  queryRules = rules;
+  // Parse out the names of individual rules, so we can check whether a given complex clause
+  // is referencing a rule or not when we parse sifting patterns.
+  // FIXME This is super fragile right now, because it assumes a very particular indentation style
+  // in the string used to specify the query rules, so we should definitely improve this.
+  const ruleNameMatches = rules.match(/^\[\([a-zA-Z0-9_]*/gm).map(rn => rn.substring(2));
+  queryRuleNames = ruleNameMatches;
+}
+
 /// PARSE SIFTING PATTERNS
 
 function findLvars(s) {
@@ -23,11 +39,13 @@ function parseSiftingPatternClause(line) {
   if (line[0] === '(') {
     // handle complex clause
     // can be `(or ...)`, `(not ...)`, `(not-join ...)`, `(pred arg*)`, `(rule arg*)`, `(function arg*) result`
-    if (['(or', '(not', '(not-join'].indexOf(parts[0]) > -1) {
+    const clauseHead = parts[0].substring(1);
+    if (['or', 'not', 'not-join'].indexOf(clauseHead) > -1) {
       // don't export lvars from `or`, `not`, `not-join` clauses
       lvars = [];
+    } else if (queryRuleNames.indexOf(clauseHead) > -1) {
+      // don't wrap in square brackets
     } else {
-      // TODO also need to run this branch if the head of the clause is a rule name
       clauseStr = '[' + line + ']';
     }
   } else {
@@ -49,7 +67,7 @@ function parseSiftingPattern(lines) {
   lvars = distinct(lvars);
   let findPart = lvars.map(lvar => '?' + lvar).join(' ');
   let wherePart = clauses.map(clause => clause.clauseStr).join();
-  let query = '[:find ' + findPart + ' :where ' + wherePart + ']';
+  let query = `[:find ${findPart} :in $ % :where ${wherePart}]`;
   return {lvars: lvars, clauses: clauses, query: query, findPart: findPart, wherePart: wherePart};
 }
 
@@ -72,7 +90,7 @@ function runSiftingPattern(db, pattern) {
   if (!pattern.query || !pattern.lvars) {
     throw Error("Invalid sifting pattern!", pattern);
   }
-  const results = datascript.q(pattern.query, db); // TODO include rules, they're important
+  const results = datascript.q(pattern.query, db, queryRules);
   const nuggets = results.map(function(result) {
     let vars = {};
     for (let i = 0; i < pattern.lvars.length; i++) {
@@ -196,11 +214,6 @@ function addEvent(db, event) {
 // Given an action spec and a set of lvar bindings, return a concrete event object
 // representing a performance of the specified action with the specified bindings.
 function realizeEvent(action, bindings) {
-  // make bound lvars accessible by name
-  for (let i = 0; i < action.lvars.length; i++){
-    bindings[action.lvars[i]] = bindings[i]; 
-  }
-  // build the event object
   let event = action.event(bindings);
   event.type = 'event';
   event.eventType = action.name;
@@ -215,8 +228,12 @@ function possibleActions(db, allActions) {
   let possible = [];
   for (let action of allActions) {
     if (action.query) {
-      let allBindings = datascript.q(action.query, db);
+      let allBindings = datascript.q(action.query, db, queryRules);
       for (let bindings of allBindings){
+        // make bound lvars accessible by name
+        for (let i = 0; i < action.lvars.length; i++){
+          bindings[action.lvars[i]] = bindings[i];
+        }
         possible.push({action: action, bindings: bindings});
       }
     } else {
@@ -232,7 +249,7 @@ function possibleActionsByType(db, allActions) {
   let possibleByType = {};
   for (let action of allActions) {
     if (action.query) {
-      let allBindings = datascript.q(action.query, db);
+      let allBindings = datascript.q(action.query, db, queryRules);
       if (allBindings.length === 0) continue; // skip actions for which there's no valid bindings
       possibleByType[action.name] = [];
       for (let bindings of allBindings) {
@@ -246,6 +263,7 @@ function possibleActionsByType(db, allActions) {
 }
 
 return {
+  setQueryRules,
   findLvars,
   quotewrapIfNeeded,
   parseSiftingPatternClause,
