@@ -35,7 +35,7 @@ function evaluatePotentialAction(potentialAction) {
   for (let authorGoal of authorGoals) {
     const scoreFromThisGoal = evaluatePotentialActionPerAuthorGoal(potentialAction, authorGoal);
     if (scoreFromThisGoal > 0) {
-      potentialAction.authorGoals.push(authorGoal);
+      potentialAction.authorGoals.push({goal: authorGoal, score: scoreFromThisGoal});
     }
     overallScore += scoreFromThisGoal;
   }
@@ -91,10 +91,18 @@ function renderSuggestedActions() {
   // add new suggested actions to suggestedActionsUI
   for (let i = 0; i < suggestedActions.length && i < 5; i++) {
     const suggested = suggestedActions[i];
-    const node = createNode(`<div class="suggested-action">
-      ${renderActionTagline(suggested.action, suggested.bindings)}
-      <!--${suggested.action.name} (${Object.values(suggested.bindings).join(', ')})-->
-    </div>`);
+    let html = `<div class="suggested-action">
+      <div class="tagline">${renderActionTagline(suggested.action, suggested.bindings)}</div>`;
+    if (suggested.authorGoals.length > 0) {
+      html += `<ul class="contributing-author-goals">`;
+      for (let {goal, score} of suggested.authorGoals) {
+        console.log(goal);
+        html += `<li>${goal.type} ${goal.params}: ${score}</li>`;
+      }
+      html += '</ul>';
+    }
+    html += '</div>';
+    const node = createNode(html);
     node.onclick = function() {
       runSuggestedAction(suggested);
     };
