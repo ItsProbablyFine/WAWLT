@@ -45,9 +45,12 @@ function evaluatePotentialAction(potentialAction) {
 
 function renderActionTagline(action, bindings) {
   let tagline = action.tagline || '';
-  console.log(bindings);
-  for (let i in action.lvars) {
-    tagline = tagline.split('?' + action.lvars[i]).join(bindings[i]);
+  // we gotta sort the lvars by length so we don't substitute them in the wrong order
+  // and mess up substitution of lvars whose names include the names of other lvars as substrings
+  const lvars = Object.keys(bindings).filter(x => Number.isNaN(parseInt(x))); // only non-numberish keys
+  const sortedLvars = lvars.sort((a, b) => b.length - a.length);
+  for (let lvar of sortedLvars) {
+    tagline = tagline.split('?' + lvar).join(bindings[lvar]);
   }
   return tagline;
 }
@@ -288,3 +291,9 @@ openAuthorGoalEditorButton.onclick = function(){
 rerollSuggestedActionsButton.onclick = renderSuggestedActions;
 filterStringInput.onchange = renderSuggestedActions;
 renderSuggestedActions();
+
+/*
+for (let i = 0; i < 999; i++) {
+  Sim.runRandomAction();
+}
+*/

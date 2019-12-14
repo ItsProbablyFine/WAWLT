@@ -28,6 +28,24 @@ function getCharacterIDByName(db, name) {
   return datascript.q(`[:find ?c :where [?c "type" "char"] [?c "name" "${name}"]]`, db)[0][0];
 }
 
+function generateProjectName(projectType) {
+  const prefix = randNth(['An Experiment in ', 'Toward ', 'Towards ', '', '', '', '', '']);
+  const gerund = randNth([
+    'Analyzing', 'Constructing', 'Defining', 'Envisioning', 'Evaluating', 'Generating', 'Imagining', 'Interpreting',
+    'Optimizing', 'Prototyping', 'Proving', 'Redefining', 'Refining', 'Sketching'
+  ]);
+  const maybeNon = randNth(['Non-', '', '', '']);
+  const adjective = randNth([
+    'Archaic', 'Artificial', 'Bilateral', 'Colorless', 'Digital', 'Exuberant', 'False', 'Green',
+    'Interactive', 'Joyful', 'Narrative', 'New', 'Novel', 'Smart'
+  ]);
+  const noun = randNth([
+    'Agents', 'Animals', 'Balloons', 'Castaways', 'Fish', 'Games', 'Heuristics', 'Intelligences',
+    'Intersections', 'Societies', 'Stories', 'Systems', 'Tubes'
+  ]);
+  return `${prefix}${gerund} ${maybeNon}${adjective} ${noun}`;
+}
+
 let allNames = [
   'Aaron', 'Adam', 'Alex', 'Alice', 'Ann',
   'Bella', 'Ben', 'Beth',
@@ -233,6 +251,8 @@ return {
   setPlayerName: function(playerName) {
     gameDB = updateProperty(gameDB, 1, 'name', playerName);
   },
+  // Generate a project name.
+  generateProjectName,
   // Get a list of all character names.
   getAllCharacterNames: function () {
     return getAllCharacterNames(gameDB);

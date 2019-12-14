@@ -65,15 +65,16 @@ Felt.registerAction('startSoloProject', {
     '?c1 "name" ?n1'
   ],
   event: function(vars){
-    let projectType = randNth(allProjectTypes);
+    const projectType = randNth(allProjectTypes);
+    const projectName = Sim.generateProjectName(projectType);
     return {
       actor: vars.c1,
       // TODO need to specify project: somehow, but can't, because its ID is only generated
       // once the effects are run
       effects: [
-        {type: 'startProject', contributors: [vars.c1], projectType: projectType}
+        {type: 'startProject', contributors: [vars.c1], projectType, projectName}
       ],
-      text: "🎨 " + vars.n1 + " started a new " + projectType + " project!",
+      text: `🎨 ${vars.n1} started a new project: "${projectName}"!`,
       tags: ['projects']
     };
   }
@@ -97,22 +98,23 @@ Felt.registerAction('startCollabProject', {
     '?c2 "name" ?n2'
   ],
   event: function(vars){
-    let projectType = randNth(allProjectTypes);
+    const projectType = randNth(allProjectTypes);
+    const projectName = Sim.generateProjectName(projectType);
     return {
       actor: vars.c1,
       // TODO need to specify project: somehow, but can't, because its ID is only generated
       // once the effects are run
       effects: [
-        {type: 'startProject', contributors: [vars.c1, vars.c2], projectType: projectType}
+        {type: 'startProject', contributors: [vars.c1, vars.c2], projectType, projectName}
       ],
-      text: `🎨 ${vars.n1} and ${vars.n2} started a new ${projectType} project together!`,
+      text: `🎨 ${vars.n1} and ${vars.n2} started a new project together: "${projectName}"!`,
       tags: ['projects']
     };
   }
 });
 
 Felt.registerAction('persuadePersonToJoinProject', {
-  tagline: '?n1: Persuade ?n2 to join project ?proj',
+  tagline: '?n1: Persuade ?n2 to join project: "?projname"',
   where: [
     // there's an active project! ?c1 is on it!
     '?proj "projectContributor" ?c1',
@@ -133,7 +135,7 @@ Felt.registerAction('persuadePersonToJoinProject', {
     // extra information for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2',
-    '?proj "projectType" ?projtype'
+    '?proj "projectName" ?projname'
   ],
   event: function(vars){
     console.log("persuadePersonToJoinProject", vars);
@@ -143,21 +145,21 @@ Felt.registerAction('persuadePersonToJoinProject', {
       effects: [
         {type: 'joinProject', project: vars.proj, contributor: vars.c2}
       ],
-      text: `🎨 ${vars.n1} persuaded ${vars.n2} to join their ${vars.projtype} project ${vars.proj}!`,
+      text: `🎨 ${vars.n1} persuaded ${vars.n2} to join their project, "${vars.projname}"!`,
       tags: ['projects']
     };
   }
 });
 
 Felt.registerAction('leaveProjectDueToWorkload', {
-  tagline: '?n1: Leave project ?proj due to having too much work to do',
+  tagline: '?n1: Leave project "?projname" due to having too much work to do',
   where: [
     // there's an active project! ?c1 is on it!
     '?proj "projectContributor" ?c1',
     '?proj "state" "active"',
     // extra information for display purposes
     '?c1 "name" ?n1',
-    '?proj "projectType" ?projtype'
+    '?proj "projectName" ?projname'
   ],
   event: (vars) => ({
     actor: vars.c1,
@@ -165,13 +167,13 @@ Felt.registerAction('leaveProjectDueToWorkload', {
     effects: [
       {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
     ],
-    text: `🎨 ${vars.n1} left project ${vars.proj} because they had too much work to do!`,
+    text: `🎨 ${vars.n1} left project "${vars.projname}" because they had too much work to do!`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('leaveProjectDueToPersonalDifferences', {
-  tagline: '?n1: Leave project ?proj due to disagreements with ?n2',
+  tagline: '?n1: Leave project "?projname" due to disagreements with ?n2',
   where: [
     // there's an active project! ?c1 is on it!
     '?proj "projectContributor" ?c1',
@@ -185,7 +187,7 @@ Felt.registerAction('leaveProjectDueToPersonalDifferences', {
     // extra information for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
   ],
   event: (vars) => ({
     actor: vars.c1,
@@ -194,17 +196,17 @@ Felt.registerAction('leaveProjectDueToPersonalDifferences', {
     effects: [
       {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
     ],
-    text: `🎨 ${vars.n1} left project ${vars.proj} because they don't like working with ${vars.n2}`,
+    text: `🎨 ${vars.n1} left project "${vars.projname}" because they don't like working with ${vars.n2}`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('makeProgressOnProject', {
-  tagline: '?n1: Make progress on project ?proj',
+  tagline: '?n1: Make progress on project "?projname"',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"'
   ],
   event: (vars) => ({
@@ -213,17 +215,17 @@ Felt.registerAction('makeProgressOnProject', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " made a lot of progress on their " + vars.projtype + " project.",
+    text: `🎨 ${vars.n1} made a lot of progress on "${vars.projname}".`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('workFruitlesslyOnProject', {
-  tagline: '?n1: Work fruitlessly on project ?proj',
+  tagline: '?n1: Work fruitlessly on project "?projname"',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"'
   ],
   event: (vars) => ({
@@ -232,18 +234,18 @@ Felt.registerAction('workFruitlesslyOnProject', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " tried to work on their " + vars.projtype + " project, but got nowhere.",
+    text: `🎨 ${vars.n1} tried to work on "${vars.projname}", but got nowhere.`,
     tags: ['projects']
   })
 });
 
 // TODO abandonment shouldn't make project inactive if there's still non-abandoned contributors
 Felt.registerAction('abandonProject', {
-  tagline: '?n1: Abandon project ?proj',
+  tagline: '?n1: Abandon project "?projname"',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"'
   ],
   event: (vars) => ({
@@ -253,18 +255,18 @@ Felt.registerAction('abandonProject', {
       {type: 'updateProjectState', project: vars.proj, newState: 'inactive'},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 2}
     ],
-    text: "🎨 " + vars.n1 + " gave up on their " + vars.projtype + " project.",
+    text: `🎨 ${vars.n1} gave up on "${vars.projname}".`,
     tags: ['projects']
   })
 });
 
 // TODO abandonment shouldn't make project inactive if there's still non-abandoned contributors
 Felt.registerAction('resumeProject', {
-  tagline: '?n1: Resume work on project ?proj',
+  tagline: '?n1: Resume work on project "?projname"',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "inactive"'
   ],
   event: (vars) => ({
@@ -274,17 +276,17 @@ Felt.registerAction('resumeProject', {
       {type: 'updateProjectState', project: vars.proj, newState: 'active'},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 2}
     ],
-    text: "🎨 " + vars.n1 + " started working on their " + vars.projtype + " project again!",
+    text: `🎨 ${vars.n1} started working on "${vars.projname} again!`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('finishProject', {
-  tagline: '?n1: Put the finishing touches on project ?proj',
+  tagline: '?n1: Put the finishing touches on project "?projname"',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"',
     '?proj "dramaLevel" ?d',
     '(>= ?d 5)'
@@ -295,17 +297,17 @@ Felt.registerAction('finishProject', {
     effects: [
       {type: 'updateProjectState', project: vars.proj, newState: 'finished'}
     ],
-    text: "🎨 " + vars.n1 + " finished their " + vars.projtype + " project!",
+    text: `🎨 ${vars.n1} finished project "${vars.projname}"!`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('showProject_loved', {
-  tagline: '?n1: Show project ?proj to ?n2, who reacts positively',
+  tagline: '?n1: Show project "?projname" to ?n2, who reacts positively',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"',
     '?c2 "type" "char"',
     '?c2 "name" ?n2',
@@ -319,17 +321,17 @@ Felt.registerAction('showProject_loved', {
       {type: 'addAttitude', charge: 'positive', source: vars.c1, target: vars.c2},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " showed their " + vars.projtype + " project to " + vars.n2 + ", who loved it ☺️",
+    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who loved it ☺️`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('showProject_neutral', {
-  tagline: '?n1: Show project ?proj to ?n2, who reacts neutrally',
+  tagline: '?n1: Show project "?projname" to ?n2, who reacts neutrally',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"',
     '?c2 "type" "char"',
     '?c2 "name" ?n2',
@@ -342,18 +344,17 @@ Felt.registerAction('showProject_neutral', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " showed their " + vars.projtype + " project to " + vars.n2 +
-          ", who was kinda meh about it 😐",
+    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who was kinda meh about it 😐`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('showProject_hated', {
-  tagline: '?n1: Show project ?proj to ?n2, who reacts negatively',
+  tagline: '?n1: Show project "?projname" to ?n2, who reacts negatively',
   where: [
     '?c1 "name" ?n1',
     '?proj "projectContributor" ?c1',
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?proj "state" "active"',
     '?c2 "type" "char"',
     '?c2 "name" ?n2',
@@ -367,13 +368,13 @@ Felt.registerAction('showProject_hated', {
       {type: 'addAttitude', charge: 'negative', source: vars.c2, target: vars.c1},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " showed their " + vars.projtype + " project to " + vars.n2 + ", who hated it 😡",
+    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who hated it 😡`,
     tags: ['projects']
   })
 });
 
 Felt.registerAction('getDiscouraged', {
-  tagline: '?n1: Consider restarting project ?proj, but recall ?n2\'s criticisms and give up',
+  tagline: '?n1: Consider restarting project "?projname", but recall ?n2\'s criticisms and give up',
   where: [
     // ?e1: ?c1 shows ?proj to ?c2, who hates it
     '?e1 "eventType" "showProject_hated"',
@@ -388,7 +389,7 @@ Felt.registerAction('getDiscouraged', {
     '?proj "state" "inactive"',
     '(< ?e1 ?e2)',
     // extra information for display purposes
-    '?proj "projectType" ?projtype',
+    '?proj "projectName" ?projname',
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
   ],
@@ -398,8 +399,8 @@ Felt.registerAction('getDiscouraged', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: "🎨 " + vars.n1 + " considered restarting their abandoned " + vars.projtype +
-          " project, but then remembered " + vars.n2 + "'s negative remarks and decided to leave it alone.",
+    text: `🎨 ${vars.n1} considered restarting their abandoned project "${vars.projname}", \
+but then remembered ${vars.n2}'s negative remarks and decided to leave it alone.`,
     tags: ['projects']
   })
 });

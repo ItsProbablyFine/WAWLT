@@ -10,16 +10,16 @@ Felt.registerEffectHandler('addAttitude', function(db, effect) {
 });
 
 Felt.registerEffectHandler('startProject', function(db, effect) {
-  Felt.checkEffectKeys(effect, ['contributors', 'projectType']);
+  Felt.checkEffectKeys(effect, ['contributors', 'projectType', 'projectName']);
   return createEntity(db, {
     type: 'project',
+    projectName: effect.projectName,
     projectType: effect.projectType,
     projectContributor: effect.contributors,
     state: 'active',
     dramaLevel: 0
   });
 });
-
 
 Felt.registerEffectHandler('joinProject', function(db, effect) {
   Felt.checkEffectKeys(effect, ['project', 'contributor']);
