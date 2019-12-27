@@ -23,6 +23,62 @@ Felt.registerAction('discussSharedValue', {
   })
 });
 
+/// INSPIRATION SOURCES
+
+Felt.registerAction('consumeMedia', {
+  tagline: '?n1: Consume a media artifact',
+  where: [
+    // c1 is a character
+    '?c1 "type" "char"',
+    // extra info for display purposes
+    '?c1 "name" ?n1'
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    target: vars.c1,
+    effects: [],
+    text: `${vars.n1} consumed a media artifact`,
+    tags: ['inspiration']
+  })
+});
+
+Felt.registerAction('thinkAboutResearch', {
+  tagline: '?n1: Think about research',
+  where: [
+    // c1 is a character
+    '?c1 "type" "char"',
+    // extra info for display purposes
+    '?c1 "name" ?n1'
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    target: vars.c1,
+    effects: [],
+    text: `${vars.n1} thought about a research problem`,
+    tags: ['inspiration']
+  })
+});
+
+Felt.registerAction('discussResearch', {
+  tagline: '?n1: Discuss research with ?n2',
+  where: [
+    // c1 and c2 are two different characters
+    '?c1 "type" "char"',
+    '?c2 "type" "char"',
+    '(not= ?c1 ?c2)',
+    // extra info for display purposes
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2'
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    target: vars.c2,
+    effects: [],
+    text: `${vars.n1} discussed research ideas with ${vars.n2}`,
+    tags: ['inspiration']
+  })
+});
+
 /// PROJECT DRAMA SEQUENCE
 
 Felt.registerAction('worryAboutOwnProjectDrama', {

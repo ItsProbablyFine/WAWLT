@@ -80,9 +80,7 @@ function deleteProperty(db, eid, prop, val) {
   return datascript.db_with(db, [[':db/retract', eid, prop, val]]);
 }
 
-/*
 // Given the DB and an EID, return an updated DB with the specified entity removed.
 function deleteEntity(db, eid) {
   return datascript.db_with(db, [[':db/retractEntity', eid]]);
 }
-*/

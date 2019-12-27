@@ -58,6 +58,10 @@ let allProjectTypes = ['art','craft','poetry','programming','research','writing'
 Felt.registerAction('startSoloProject', {
   tagline: '?n1: Start new project',
   where: [
+    // inspiration event (TODO ensure it's recent?)
+    '?e1 "tag" "inspiration"',
+    '?e1 "actor" ?c1',
+    // extra info for display purposes
     '?c1 "name" ?n1'
   ],
   event: function(vars){
@@ -83,6 +87,9 @@ Felt.registerAction('startCollabProject', {
     '(likes ?c1 ?c2)',
     // liking gotta be reciprocal
     '(likes ?c2 ?c1)',
+    // inspiration event (TODO ensure it's recent?)
+    '?e1 "tag" "inspiration"',
+    '?e1 "actor" ?c1',
     // extra info for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
