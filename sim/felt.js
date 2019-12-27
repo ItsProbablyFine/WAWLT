@@ -203,6 +203,7 @@ function addEvent(db, event) {
   for (let effect of event.effects || []){
     effect.cause = eventID;
     db = processEffect(db, effect);
+    db = updateProperty(db, eventID, 'tag', effect.type); // automatically add an event tag for each effect
   }
   // add the event's tags to the DB
   for (let tag of event.tags || []) {
