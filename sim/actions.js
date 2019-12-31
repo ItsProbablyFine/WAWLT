@@ -69,8 +69,6 @@ Felt.registerAction('startSoloProject', {
     const projectName = Sim.generateProjectName(projectType);
     return {
       actor: vars.c1,
-      // TODO need to specify project: somehow, but can't, because its ID is only generated
-      // once the effects are run
       effects: [
         {type: 'startProject', contributors: [vars.c1], projectType, projectName}
       ],
@@ -99,8 +97,6 @@ Felt.registerAction('startCollabProject', {
     const projectName = Sim.generateProjectName(projectType);
     return {
       actor: vars.c1,
-      // TODO need to specify project: somehow, but can't, because its ID is only generated
-      // once the effects are run
       effects: [
         {type: 'startProject', contributors: [vars.c1, vars.c2], projectType, projectName}
       ],

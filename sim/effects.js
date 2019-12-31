@@ -11,7 +11,7 @@ Felt.registerEffectHandler('addAttitude', function(db, effect) {
 
 Felt.registerEffectHandler('startProject', function(db, effect) {
   Felt.checkEffectKeys(effect, ['contributors', 'projectType', 'projectName']);
-  return createEntity(db, {
+  db = createEntity(db, {
     type: 'project',
     projectName: effect.projectName,
     projectType: effect.projectType,
@@ -19,6 +19,8 @@ Felt.registerEffectHandler('startProject', function(db, effect) {
     state: 'active',
     dramaLevel: 0
   });
+  projectID = newestEID(db);
+  return updateProperty(db, effect.cause, 'project', projectID);
 });
 
 Felt.registerEffectHandler('joinProject', function(db, effect) {
