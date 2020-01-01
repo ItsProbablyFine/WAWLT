@@ -46,6 +46,16 @@ function getCharacterIDByName(db, name) {
   return datascript.q(`[:find ?c :where [?c "type" "char"] [?c "name" "${name}"]]`, db)[0][0];
 }
 
+function getImpressions(db, source, target) {
+  return datascript.q(`[:find ?i \
+                        :where [?i "type" "impression"] [?i "source" ${source}] [?i "target" ${target}]]`, db);
+}
+
+function getRelationship(db, source, target) {
+  return datascript.q(`[:find ?r \
+                        :where [?r "type" "ship"] [?r "source" ${source}] [?r "target" ${target}]]`, db)[0][0];
+}
+
 function generateProjectName(projectType) {
   const prefix = randNth(['An Experiment in ', 'Toward ', 'Towards ', '', '', '', '', '']);
   const gerund = randNth([
