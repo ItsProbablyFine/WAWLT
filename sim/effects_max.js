@@ -52,7 +52,7 @@ Felt.registerEffectHandler('addImpression', function(db, effect) {
   // update the overall numerical charge from source to target by summing new impression values
   const newImpressions = Sim.getImpressions(db, effect.source, effect.target).map(id => getEntity(db, id));
   const newCharge = newImpressions.map(imp => imp.value).reduce((a, b) => a + b, 0);
-  const shipID = getRelationship(db, effect.source, effect.target);
+  const shipID = Sim.getRelationship(db, effect.source, effect.target);
   db = updateProperty(db, shipID, 'charge', newCharge);
 
   // return the updated DB

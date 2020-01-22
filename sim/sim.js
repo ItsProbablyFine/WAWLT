@@ -293,6 +293,9 @@ return {
   },
   // Generate a project name.
   generateProjectName,
+  // Functions for walking the entity graph.
+  getImpressions,
+  getRelationship,
   // Get a list of all character names.
   getAllCharacterNames: function () {
     return getAllCharacterNames(gameDB);
