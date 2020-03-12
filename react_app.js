@@ -57,6 +57,9 @@ const authorGoalTypes = {
       if (event.actor === charID) return 5;
       if (event.target === charID) return 5;
       return 0;
+    },
+    getHumanReadableText: function([char]) {
+      return `Involve ${char} in plot`;
     }
   },
   castSuspicionOnCharacter: {
@@ -68,6 +71,9 @@ const authorGoalTypes = {
       if (event.eventType === "betray" && event.target === charID) return 10;
       if (event.eventType === "showProject_hated" && event.target === charID) return 7;
       return 0;
+    },
+    getHumanReadableText: function([char]) {
+      return `Cast suspicion on ${char}`;
     }
   },
   dispelSuspicionOnCharacter: {
@@ -76,6 +82,9 @@ const authorGoalTypes = {
     evaluate: function(goalParams, event) {
       const castSuspicionScore = authorGoalTypes.castSuspicionOnCharacter.evaluate(goalParams, event);
       return -castSuspicionScore;
+    },
+    getHumanReadableText: function([char]) {
+      return `Dispel suspicion on ${char}`;
     }
   },
   escalateTensionBetweenCharacters: {
@@ -91,6 +100,9 @@ const authorGoalTypes = {
       if (event.eventType === "showProject_loved" && event.actor === charID1 && event.target === charID2) return -10;
       if (event.eventType === "showProject_loved" && event.actor === charID2 && event.target === charID1) return -10;
       return 0;
+    },
+    getHumanReadableText: function([char1, char2]) {
+      return `Escalate tension between ${char1} and ${char2}`;
     }
   },
   defuseTensionBetweenCharacters: {
@@ -99,23 +111,38 @@ const authorGoalTypes = {
     evaluate: function(goalParams, event) {
       const escalateTensionScore = authorGoalTypes.escalateTensionBetweenCharacters.evaluate(goalParams, event);
       return -escalateTensionScore;
+    },
+    getHumanReadableText: function([char1, char2]) {
+      return `Defuse tension between ${char1} and ${char2}`;
     }
   },
   escalateTensionBetweenValues: {
     text: "Escalate tension between values",
-    params: ["value", "value"]
+    params: ["value", "value"],
+    getHumanReadableText: function([val1, val2]) {
+      return `Escalate tension between ${val1} and ${val2}`;
+    }
   },
   defuseTensionBetweenValues: {
     text: "Defuse tension between values",
-    params: ["value", "value"]
+    params: ["value", "value"],
+    getHumanReadableText: function([val1, val2]) {
+      return `Defuse tension between ${val1} and ${val2}`;
+    }
   },
   introduceFalseLead: {
     text: "Introduce false lead",
-    params: []
+    params: [],
+    getHumanReadableText: function() {
+      return `Introduce false lead`;
+    }
   },
   dismissFalseLead: {
     text: "Dismiss false lead",
-    params: []
+    params: [],
+    getHumanReadableText: function() {
+      return `Dismiss false lead`;
+    }
   }
 };
 for (let goalType of Object.keys(authorGoalTypes)) {
@@ -338,7 +365,8 @@ function TranscriptAuthorGoal(props) {
         onChange: () => toggleAuthorGoalComplete(props.idx),
         type: 'checkbox'
       }),
-      props.goal.type + ' ' + props.goal.params.join(', '),  
+      goalSpec.getHumanReadableText ?  
+        goalSpec.getHumanReadableText(props.goal.params) : 'some other goal'
     )
   );
 }
@@ -369,6 +397,21 @@ function SuggestedAction(props) {
       onClick: () => runSuggestedAction(props.suggested)
     }, renderActionTagline(props.suggested.action, props.suggested.bindings))
     // TODO more
+  );
+}
+
+function SuggestionAuthorGoal(props) {
+  const goalSpec = authorGoalTypes[props.goal.type];
+  const goalClass= goalSpec.params[0] === 'value' ? 'value-goal' : 'char-goal';
+  return e('div', {className: 'author-goal-wrapper'},
+    e('span', {className: 'author-goal ' + goalClass},
+      e('input', {
+        checked: !!props.goal.isComplete, // !! casts missing values to bool, to suppress "uncontrolled component" warning
+        onChange: () => toggleAuthorGoalComplete(props.idx),
+        type: 'checkbox'
+      }),
+      props.goal.type + ' ' + props.goal.params.join(', '),  
+    )
   );
 }
 
