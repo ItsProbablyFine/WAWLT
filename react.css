@@ -1,0 +1,201 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: rgb(211,211,211);
+  font-family: Georgia;
+}
+.sidebyside {
+  display: flex;
+  flex-flow: row wrap;
+}
+.app > .sidebyside {
+  height: 60vh;
+}
+
+/* generics/reusables? */
+.author-goal {
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.5rem;
+}
+.author-goal.char-goal {
+  background: rgb(248,212,72); 
+}
+.author-goal.value-goal {
+  background: rgb(236,96,94);
+}
+.author-goal input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* transcript area */
+.transcript-wrapper {
+  background: #fff;
+  height: 100%;
+  padding: 2rem;
+  padding-top: 0; /* so that the bookmarks can appear to hang from the top of the screen */
+  position: relative; /* so that we can top-rightify the author goals area easily */
+  width: 50%;
+}
+.transcript-bookmarks {
+  margin-bottom: 2rem;
+}
+.transcript-bookmark {
+  background: rgb(187,213,251);
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  padding: 1rem 0.5rem;
+  vertical-align: top;
+}
+.transcript-bookmark.selected {
+  background: rgb(144,183,239);
+  padding: 1.2rem 0.5rem;
+}
+.transcript-bookmark:not(.selected) {
+  cursor: pointer;
+}
+.transcript-author-goals {
+  position: absolute;
+  right: -0.25rem;
+  text-align: right;
+  top: 1rem;
+}
+.transcript-author-goals .author-goal-wrapper {
+  margin-bottom: 1rem;
+}
+.transcript-author-goals button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: none;
+  position: relative;
+  right: 0.75rem;
+}
+.transcript-header {
+  height: 15vh;
+}
+.transcript-header input {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+  width: fit-content;
+}
+.transcript {
+  height: 45vh;
+  overflow-x: visible;
+  overflow-y: scroll;
+}
+.transcript .entry {
+  margin-bottom: 1rem;
+}
+.transcript .entry .default-desc {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.transcript .entry .user-desc {
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  padding-left: 1rem;
+  resize: none;
+  width: 100%;
+}
+.transcript .entry .user-desc:empty:not(:focus):before {
+  color: grey;
+  content: attr(data-default-text);
+  font-style: italic;
+}
+/* we use this to calculate height for vertically autoresizing transcript entry textareas.
+   its text-relevant styles need to be synced up with those of the textareas. */
+#fakeTranscriptTextarea {
+  background: red;
+  padding-left: 3rem;
+  padding-right: 2rem;
+  left: 0;
+  position: fixed;
+  top: 0;
+  white-space: pre-wrap;
+  width: 50%;
+  z-index: -1000;
+}
+
+/* suggestions area */
+.suggestions-wrapper {
+  background: rgb(211,211,211);
+  padding: 2rem;
+  width: 50%;
+}
+.filter-suggestions {
+  margin-bottom: 1rem;
+}
+.filter-suggestions h3 {
+  margin-right: 1em;
+}
+.filter-suggestions input {
+  width: 180px;
+}
+.filter-suggestions button {
+  background: rgb(58,58,58);
+  border-radius: 0.5rem;
+  color: white;
+  left: -1.5rem;
+  padding: 0 1rem;
+  position: relative;
+}
+.suggested-action {
+  background: #fff;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+.suggested-action.internal {
+  background: rgb(229,226,253);
+}
+.suggested-action .tagline {
+  cursor: pointer;
+}
+
+/* inspector area */
+.inspector-wrapper {
+  background: rgb(238,238,238);
+  display: flex;
+  flex-flow: row wrap;
+  height: 40vh;
+  padding: 2rem;
+  width: 100%;
+}
+.inspector-wrapper.active {
+  height: 400px;
+}
+.inspector-wrapper.inactive {
+  height: 50px;
+}
+.inspector-left-side {
+  padding-right: 1rem;
+  width: 20%;
+}
+.inspector-tab-button {
+  background: rgb(58,58,58);
+  border-radius: 0.5rem;
+  color: white;
+  display: block;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-bottom: 2px;
+  padding: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+.inspector-tab-button.selected {
+  background: rgb(8,8,8);
+}
+.inspector-tab {
+  background: #efe;
+  width: 80%;
+}
