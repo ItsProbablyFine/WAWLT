@@ -11,8 +11,11 @@ body {
   display: flex;
   flex-flow: row wrap;
 }
-.app > .sidebyside {
+.app.inspector-active > .sidebyside {
   height: 60vh;
+}
+.app.inspector-inactive > .sidebyside {
+  height: 90vh;
 }
 
 /* generics/reusables? */
@@ -87,9 +90,14 @@ body {
   width: fit-content;
 }
 .transcript {
-  height: 45vh;
   overflow-x: visible;
   overflow-y: scroll;
+}
+.inspector-active .transcript {
+  height: 45vh;
+}
+.inspector-inactive .transcript {
+  height: 75vh;
 }
 .transcript .entry {
   margin-bottom: 1rem;
@@ -166,15 +174,19 @@ body {
   background: rgb(238,238,238);
   display: flex;
   flex-flow: row wrap;
-  height: 40vh;
+  height: 10vh;
   padding: 2rem;
   width: 100%;
 }
-.inspector-wrapper.active {
-  height: 400px;
+.inspector-active .inspector-wrapper {
+  height: 40vh;
 }
-.inspector-wrapper.inactive {
-  height: 50px;
+.inspector-inactive .inspector-wrapper {
+  height: 10vh;
+}
+.inspector-inactive .inspector-left-side, 
+.inspector-inactive .inspector-tab {
+  display: none;
 }
 .inspector-left-side {
   padding-right: 1rem;

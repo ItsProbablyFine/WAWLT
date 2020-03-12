@@ -291,11 +291,16 @@ function toggleAuthorGoalComplete(goalID) {
   renderUI();
 }
 
+function toggleInspectorActive() {
+  appState.inspectorActive = !appState.inspectorActive;
+  renderUI();
+}
+
 /// React components
 
 function App(props) {
   console.log('render called!');
-  return e('div', {className: 'app'},
+  return e('div', {className: 'app' + (props.inspectorActive ? ' inspector-active' : ' inspector-inactive')},
     e('div', {className: 'sidebyside'},
       e(TranscriptWrapper, props),
       e(SuggestionsWrapper, props),
@@ -420,7 +425,7 @@ const inspectorTabNames = [
 ];
 
 function InspectorWrapper(props) {
-  return e('div', {className: 'inspector-wrapper' + (props.inspectorActive ? ' active' : ' inactive')},
+  return e('div', {className: 'inspector-wrapper'},
     e('div', {className: 'inspector-left-side'},
       e('h3', null, 'What\'s happening?'),
       // tab buttons
