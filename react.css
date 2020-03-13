@@ -52,7 +52,9 @@ body {
   font-weight: bold;
   margin-right: 0.5rem;
   padding: 1rem 0.5rem;
+  text-align: center;
   vertical-align: top;
+  width: 2.5rem;
 }
 .transcript-bookmark.selected {
   background: rgb(144,183,239);
@@ -63,7 +65,7 @@ body {
 }
 .transcript-author-goals {
   position: absolute;
-  right: -0.25rem;
+  right: -0.5rem;
   text-align: right;
   top: 1rem;
 }
@@ -146,13 +148,14 @@ body {
   margin-right: 1em;
 }
 .filter-suggestions input {
+  padding-right: .5em;
   width: 180px;
 }
 .filter-suggestions button {
   background: rgb(58,58,58);
   border-radius: 0.5rem;
   color: white;
-  left: -1.5rem;
+  left: -.5rem;
   padding: 0 1rem;
   position: relative;
 }
