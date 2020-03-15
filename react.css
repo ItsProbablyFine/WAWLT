@@ -214,3 +214,54 @@ body {
   background: #efe;
   width: 80%;
 }
+
+/* author goals editor */
+.author-goals-editor {
+  display: none; /* Hidden by default */
+  position: fixed; /* Sit on top of the page content */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  /*cursor: pointer; /* Add a pointer on hover */
+}
+.author-goals-editor.active {
+  display: block;
+}
+.author-goals-editor-inner {
+  background: white;
+  border-radius: 1rem;
+  left: 25%;
+  padding: 1rem;
+  position: relative;
+  top: 25%;
+  width: 50%;
+}
+.author-goals-editor-inner .author-goals {
+  display: flex;
+  flex-flow: row wrap;
+}
+.author-goals-editor-inner .author-goal {
+  /*background: #eee;*/ /* should be set by .char-goal and .value-goal classes */
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+}
+.author-goals-editor-inner .author-goal select {
+  margin-right: 0.5rem;
+}
+.close-goals-editor-button {
+  background: rgb(58,58,58);
+  border-radius: 0.5rem;
+  color: white;
+  display: block;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  /*text-align: center;*/
+  width: 100%;
+}

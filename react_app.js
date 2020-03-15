@@ -3,6 +3,7 @@
 const e = React.createElement;
 
 const appState = {
+  authorGoalsEditorActive: true,
   chapters: [
     {
       id: 0,
@@ -220,6 +221,8 @@ function actionMatchesFilterString(suggested, filterString) {
 
 /// state change functions
 
+// transcript state changes
+
 function createChapter() {
   const nextChapterID = appState.currentChapterID + 1;
   appState.chapters.push({id: nextChapterID, title: '', entries: []})
@@ -227,37 +230,9 @@ function createChapter() {
   renderUI();
 }
 
-function openAuthorGoalsEditor() {
-  // TODO
-}
-
-function rerollActionSuggestions() {
-  const suggestedActions = Sim.getSuggestedActions();
-  suggestedActions.forEach(evaluatePotentialAction);
-  suggestedActions.sort((a, b) => b.score - a.score);
-  appState.suggestedActions = suggestedActions;
-  renderUI();
-}
-
-function runSuggestedAction(suggested) {
-  // run selected action in simulation
-  const event = Sim.runAction(suggested.action, suggested.bindings);
-  // add new entry to end of transcript, with default text from selected action
-  const chapter = getCurrentChapter();
-  chapter.entries.push({id: chapter.entries.length, defaultDesc: event.text, userDesc: '', event});
-  // get and render new suggested actions
-  rerollActionSuggestions();
-}
-
 function selectChapter(chapterID) {
   // TODO check whether the chapter we're trying to switch to actually exists, and complain if not
   appState.currentChapterID = chapterID;
-  renderUI();
-}
-
-function selectInspectorTab(tabName) {
-  // TODO check whether the inspector tab we're trying to switch to makes any kind of sense
-  appState.currentInspectorTab = tabName;
   renderUI();
 }
 
@@ -279,8 +254,93 @@ function setEntryText(entryID, newText) {
   renderUI();
 }
 
+// suggestion state changes
+
+function rerollActionSuggestions() {
+  const suggestedActions = Sim.getSuggestedActions();
+  suggestedActions.forEach(evaluatePotentialAction);
+  suggestedActions.sort((a, b) => b.score - a.score);
+  appState.suggestedActions = suggestedActions;
+  renderUI();
+}
+
+function runSuggestedAction(suggested) {
+  // run selected action in simulation
+  const event = Sim.runAction(suggested.action, suggested.bindings);
+  // add new entry to end of transcript, with default text from selected action
+  const chapter = getCurrentChapter();
+  chapter.entries.push({id: chapter.entries.length, defaultDesc: event.text, userDesc: '', event});
+  // get and render new suggested actions
+  rerollActionSuggestions();
+}
+
 function setSuggestionsFilterString(newFilterString) {
   appState.suggestionsFilterString = newFilterString;
+  renderUI();
+}
+
+// inspector state changes
+
+function selectInspectorTab(tabName) {
+  // TODO check whether the inspector tab we're trying to switch to makes any kind of sense
+  appState.currentInspectorTab = tabName;
+  renderUI();
+}
+
+function toggleInspectorActive() {
+  appState.inspectorActive = !appState.inspectorActive;
+  renderUI();
+}
+
+// author goal editor state changes
+
+function addAuthorGoal() {
+  appState.currentAuthorGoals.push({
+    type: 'involveCharacterInPlot', params: [Sim.getAllCharacterNames()[0]]
+  });
+  renderUI();
+}
+
+function closeAuthorGoalsEditor() {
+  appState.authorGoalsEditorActive = false;
+  rerollActionSuggestions(); // in case we changed the author goals while the editor was open
+  // (might want to reroll on every individual author goal change, but rerolling is kinda computationally expensive)
+}
+
+function deleteAuthorGoal(goalID) {
+  appState.currentAuthorGoals.splice(goalID, 1);
+  renderUI();
+}
+
+function openAuthorGoalsEditor() {
+  appState.authorGoalsEditorActive = true;
+  renderUI();
+}
+
+function setAuthorGoalType(goalID, newType) {
+  // TODO check whether the goal we're trying to modify actually exists, and complain if not
+  // TODO check whether the newType is a valid goal type?
+  const goal = appState.currentAuthorGoals[goalID];
+  goal.type = newType;
+  goal.params = authorGoalTypes[newType].params.map((paramType) => {
+    if (paramType === 'character') {
+      return Sim.getAllCharacterNames()[0];
+    } else if (paramType === 'value') {
+      return allValues[0];
+    } else {
+      console.warn('Invalid param type for author goal', paramType, goal);
+      return null;
+    }
+  });
+  renderUI();
+}
+
+function setAuthorGoalParam(goalID, paramID, newValue) {
+  // TODO check whether the goal we're trying to modify actually exists, and complain if not
+  // TODO same for the specific param we're trying to set
+  // TODO check whether the newValue is a valid value for this param type?
+  const goal = appState.currentAuthorGoals[goalID];
+  goal.params[paramID] = newValue;
   renderUI();
 }
 
@@ -288,11 +348,6 @@ function toggleAuthorGoalComplete(goalID) {
   // TODO check whether the goal we're trying to toggle actually exists, and complain if not
   const goal = appState.currentAuthorGoals[goalID];
   goal.isComplete = !goal.isComplete;
-  renderUI();
-}
-
-function toggleInspectorActive() {
-  appState.inspectorActive = !appState.inspectorActive;
   renderUI();
 }
 
@@ -305,7 +360,8 @@ function App(props) {
       e(TranscriptWrapper, props),
       e(SuggestionsWrapper, props),
     ),
-    e(InspectorWrapper, props)
+    e(InspectorWrapper, props),
+    e(AuthorGoalsEditor, props)
   );
 }
 
@@ -443,6 +499,50 @@ function InspectorTabButton(props) {
     onClick: () => selectInspectorTab(props.tabName)
   },
   props.tabName
+  );
+}
+
+function AuthorGoalsEditor(props) {
+  return e('div', {className: 'author-goals-editor ' + (props.authorGoalsEditorActive ? 'active' : 'inactive')},
+    e('div', {className: 'author-goals-editor-inner'},
+      e('h3', null, 'What do we want?'),
+      e('div', {className: 'author-goals'},
+        props.currentAuthorGoals.map((goal, idx) => e(EditorAuthorGoal, {key: idx, goalIdx: idx, goal})),
+        e('button', {className: 'add-author-goal-button', onClick: addAuthorGoal}, 'Add new author goal')
+      ),
+      e('button', {className: 'close-goals-editor-button', onClick: closeAuthorGoalsEditor}, 'Set author goals')
+    )
+  );
+}
+
+function EditorAuthorGoal(props) {
+  const goalSpec = authorGoalTypes[props.goal.type];
+  const goalClass= goalSpec.params[0] === 'value' ? 'value-goal' : 'char-goal';
+  return e('div', {className: 'author-goal ' + goalClass},
+    // top-level goal type select
+    e('select', {
+      onChange: (ev) => setAuthorGoalType(props.goalIdx, ev.target.value),
+      value: props.goal.type
+    }, Object.keys(authorGoalTypes).map(type => e('option', {key: type, value: type}, type))),
+    // goal param value selects
+    goalSpec.params.map((paramType, paramIdx) => {
+      let options;
+      if (paramType === 'character') {
+        options = Sim.getAllCharacterNames();
+      } else if (paramType === 'value') {
+        options = allValues;
+      } else {
+        console.warn('Invalid param type for author goal', paramType, props.goal);
+        return null;
+      }
+      return e('select', {
+        key: paramIdx,
+        onChange: (ev) => setAuthorGoalParam(props.goalIdx, paramIdx, ev.target.value),
+        value: props.goal.params[paramIdx]
+      }, options.map(value => e('option', {key: value, value: value}, value)));
+    }),
+    // "delete this author goal" button
+    e('button', {className: 'delete-author-goal-button', onClick: () => deleteAuthorGoal(props.goalIdx)}, 'X')
   );
 }
 
