@@ -1,41 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Cozy Mystery Construction Kit</title>
+  <meta charset="UTF-8">
+	<title>Why Are We Like This?</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="sim/datascript-0.18.4.min.js" defer></script>
-	<script src="sim/util.js" defer></script>
-	<script src="sim/felt.js" defer></script>
-	<script src="sim/sim.js" defer></script>
-	<script src="sim/actions.js" defer></script>
-	<script src="sim/actions_max.js" defer></script>
-	<script src="sim/actions_mel.js" defer></script>
-	<script src="sim/effects.js" defer></script>
-	<script src="sim/effects_max.js" defer></script>
-	<script src="sim/effects_mel.js" defer></script>
-	<script src="sim/siftpatterns.js" defer></script>
-	<script src="main.js" defer></script>
 </head>
 <body>
-	<main>
-		<div class="transcript-wrapper">
-			<h3>The story so far</h3>
-			<button id="openAuthorGoalEditorButton">Edit author goals</button>
-			<div class="transcript" id="transcriptUI"></div>
-		</div>
-		<div class="sidebar">
-			<div class="suggestions-wrapper">
-				<h3>Suggested actions</h3>
-				<div class="filter-suggestions">
-					<strong>Filter actions: </strong>
-					<input type="text" id="filterStringInput" placeholder="John:|Betray">
-					<button id="rerollSuggestedActionsButton">Reroll</button>
-				</div>
-				<div id="suggestedActionsUI"></div>
-			</div>
-		</div>
-		<div id="authorGoalEditorUI">text</div>
-	</main>
+	<div id="app"></div>
+  <div id="fakeTranscriptTextarea">test text</div>
+
+  <!-- Load sim scripts. -->
+  <script src="sim/datascript-0.18.4.min.js"></script>
+  <script src="sim/util.js"></script>
+  <script src="sim/felt.js"></script>
+  <script src="sim/sim.js"></script>
+  <script src="sim/actions.js"></script>
+  <script src="sim/actions_max.js"></script>
+  <script src="sim/actions_mel.js"></script>
+  <script src="sim/effects.js"></script>
+  <script src="sim/effects_max.js"></script>
+  <script src="sim/effects_mel.js"></script>
+  <script src="sim/siftpatterns.js"></script>
+
+	<!-- Load React. -->
+	<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+	<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+	<!-- Load our UI code. -->
+	<script src="app.js"></script>
 </body>
 </html>
