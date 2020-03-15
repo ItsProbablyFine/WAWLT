@@ -3,7 +3,7 @@
 const e = React.createElement;
 
 const appState = {
-  authorGoalsEditorActive: true,
+  authorGoalsEditorActive: false,
   chapters: [
     {
       id: 0,
