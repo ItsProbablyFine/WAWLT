@@ -6,16 +6,24 @@
 body {
   background: rgb(211,211,211);
   font-family: Georgia;
+  overflow: hidden;
 }
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 1fr; /* fr: fraction of the free space (1 column, spans the whole container) */
+}
+.app.inspector-active {
+  grid-template-rows: 3fr 2fr;
+}
+.app.inspector-inactive {
+  grid-template-rows: 1fr 3rem;
+}
+
 .sidebyside {
   display: flex;
   flex-flow: row wrap;
-}
-.app.inspector-active > .sidebyside {
-  height: 60vh;
-}
-.app.inspector-inactive > .sidebyside {
-  height: 90vh;
 }
 
 /* generics/reusables? */
@@ -34,14 +42,23 @@ body {
   margin-right: 0.5rem;
 }
 
+/* transcript and action suggestions container (all but inspector) */
+.main {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  overflow: hidden;
+}
+
 /* transcript area */
 .transcript-wrapper {
   background: #fff;
-  height: 100%;
-  padding: 2rem;
-  padding-top: 0; /* so that the bookmarks can appear to hang from the top of the screen */
+  padding: 0 2rem; /* so the bookmarks can hang from the top of the screen and the text falls off */
   position: relative; /* so that we can top-rightify the author goals area easily */
-  width: 50%;
+  overflow-y: hidden;
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  grid-gap: 1rem;
+  box-shadow: 5px 0px 17px grey;
 }
 .transcript-bookmarks {
   margin-bottom: 2rem;
@@ -65,7 +82,7 @@ body {
 }
 .transcript-author-goals {
   position: absolute;
-  right: -0.5rem;
+  right: 0.5rem;
   text-align: right;
   top: 1rem;
 }
@@ -79,27 +96,17 @@ body {
   font-size: 1.2rem;
   padding: none;
   position: relative;
-  right: 0.75rem;
-}
-.transcript-header {
-  height: 15vh;
+  /*right: 0.75rem;*/
 }
 .transcript-header input {
   border: none;
   border-bottom: 1px solid #ccc;
   font-size: 1.1rem;
   margin-left: 0.5rem;
-  width: fit-content;
 }
 .transcript {
   overflow-x: visible;
   overflow-y: scroll;
-}
-.inspector-active .transcript {
-  height: 45vh;
-}
-.inspector-inactive .transcript {
-  height: 75vh;
 }
 .transcript .entry {
   margin-bottom: 1rem;
@@ -139,7 +146,7 @@ body {
 .suggestions-wrapper {
   background: rgb(211,211,211);
   padding: 2rem;
-  width: 50%;
+  overflow-y: scroll;
 }
 .filter-suggestions {
   margin-bottom: 1rem;
@@ -177,15 +184,9 @@ body {
   background: rgb(238,238,238);
   display: flex;
   flex-flow: row wrap;
-  height: 10vh;
   padding: 2rem;
-  width: 100%;
-}
-.inspector-active .inspector-wrapper {
-  height: 40vh;
-}
-.inspector-inactive .inspector-wrapper {
-  height: 10vh;
+  box-shadow: 0px -5px 20px grey;
+  z-index: 1; /* so shadow appears over main */
 }
 .inspector-inactive .inspector-left-side, 
 .inspector-inactive .inspector-tab {

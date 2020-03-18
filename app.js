@@ -356,7 +356,7 @@ function toggleAuthorGoalComplete(goalID) {
 function App(props) {
   console.log('render called!');
   return e('div', {className: 'app' + (props.inspectorActive ? ' inspector-active' : ' inspector-inactive')},
-    e('div', {className: 'sidebyside'},
+    e('div', {className: 'main'},
       e(TranscriptWrapper, props),
       e(SuggestionsWrapper, props),
     ),
