@@ -381,8 +381,8 @@ function TranscriptWrapper(props) {
         })
       ),
       // other header shit
-      e('div', {className: 'sidebyside'},
-        e('h3', null, `Chapter ${props.currentChapterID + 1}: `),
+      e('div', {className: 'chapter-header sidebyside'},
+        e('h3', null, `Chapter ${props.currentChapterID + 1} `),
         e('input', {
           className: 'chapter-title',
           onChange: (ev) => setChapterTitle(ev.target.value),
