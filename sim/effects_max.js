@@ -1,7 +1,7 @@
 // max effects here!
 
 Felt.registerEffectHandler('addImpression', function(db, effect) {
-  Felt.checkEffectKeys(effect, ['source', 'target', 'value']);
+  Felt.checkEffectKeys(effect, ['reason', 'source', 'target', 'value']);
 
   if (effect.value === 0) {
     const err = Error("addImpression effect value can't be 0!")
@@ -21,12 +21,13 @@ Felt.registerEffectHandler('addImpression', function(db, effect) {
   // sort existing impressions from smallest to largest absolute value,
   // so that the first one will always be the one to drop if we need to make room for the new impression
   existingImpressions.sort((a, b) => Math.abs(a.value) - Math.abs(b.value));
+  const lowestValueExistingImpression = existingImpressions[0];
 
   // figure out what changes to make to the DB. two main questions we're trying to answer:
   // 1. should we add the new impression to the DB at all?
   // 2. if we add the new impression, do we have to drop the lowest-value existing impression to make room?
   const someSlotsEmpty = existingImpressions.length < 3;
-  const newImpressionBeatsLowestValueExisting = Math.abs(effect.value) >= Math.abs(existingImpressions[0].value);
+  const newImpressionBeatsLowestValueExisting = !lowestValueExistingImpression || Math.abs(effect.value) >= Math.abs(lowestValueExistingImpression.value);
   const addNewImpression = someSlotsEmpty || newImpressionBeatsLowestValueExisting;
   const dropLowestValueExistingImpression = addNewImpression && !someSlotsEmpty;
 
@@ -42,7 +43,8 @@ Felt.registerEffectHandler('addImpression', function(db, effect) {
       value: effect.value,
       // record the ID of the introspection event that produced this impression,
       // so we can get at the underlying causes later on
-      cause: effect.cause
+      cause: effect.cause,
+      reason: effect.reason // short textual description of why this impression formed, from the perspective of c1
     });
   }
   if (dropLowestValueExistingImpression) {

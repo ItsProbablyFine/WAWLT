@@ -129,34 +129,39 @@ Felt.registerAction('worryAboutOthersProjectDrama', {
     actor: vars.c1,
     target: vars.c2,
     project: vars.proj,
-    effects: [],
+    effects: [
+      {
+        type: 'addImpression', source: vars.c1, target: vars.c2, value: +1,
+        reason: `${vars.n2} sure is working hard on "${vars.projname}"`
+      }
+    ],
     text: `${vars.n1} became concerned about ${vars.n2}'s struggles with project "${vars.projname}"`,
-    tags: ['projects']
+    tags: ['projects', 'worry', 'worryForOther']
   })
 });
 
-Felt.registerAction('askAboutOthersProjectDrama', {
-  tagline: '?n1: Ask ?n2 about their struggles with project "?projname"',
+Felt.registerAction('askIfOtherIsOK', {
+  tagline: '?n1: Ask ?n2 about something potentially worrying: "?reason"',
   where: [
-    // existing worryAboutOthersProjectDrama event from c1 to c2
-    '?e1 "eventType" "worryAboutOthersProjectDrama"',
-    '?e1 "actor" ?c1',
-    '?e1 "target" ?c2',
-    '?e1 "project" ?proj',
+    // existing worry-flavored impression
+    '?imp "type" "impression"',
+    '?imp "source" ?c1',
+    '?imp "target" ?c2',
+    '?imp "cause" ?e1',
+    '?e1 "tag" "worryForOther"',
     // TODO make sure e1 is recent enough?
     // TODO make sure we haven't already done this action recently?
     // extra info for display purposes
-    '?proj "projectName" ?projname',
+    '?imp "reason" ?reason',
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
   ],
   event: (vars) => ({
     actor: vars.c1,
     target: vars.c2,
-    project: vars.proj,
     effects: [],
-    text: `${vars.n1} asked ${vars.n2} about their struggles with project "${vars.projname}"`,
-    tags: ['projects', 'castDoubtOnProject']
+    text: `${vars.n1} asked ${vars.n2} about something potentially worrying: "${vars.reason}"`,
+    tags: ['worry', 'worryForOther', 'expressWorry']
   })
 });
 
