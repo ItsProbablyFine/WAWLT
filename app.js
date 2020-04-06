@@ -490,7 +490,8 @@ function InspectorWrapper(props) {
         e('h3', null, 'What\'s happening?'),
         // tab buttons
         e('div', {className: 'inspector-tab-buttons'},
-          inspectorTabNames.map((tabName) => e(InspectorTabButton, {key: tabName, tabName}))
+          inspectorTabNames.map((tabName) => e(InspectorTabButton, 
+            {key: tabName, tabName, selected: tabName === props.currentInspectorTab}))
         )
       ),
       e('div', {className: 'inspector-tab ' + props.currentInspectorTab}, `the ${props.currentInspectorTab} tab`)
@@ -500,7 +501,7 @@ function InspectorWrapper(props) {
 
 function InspectorTabButton(props) {
   return e('button', {
-    className: 'inspector-tab-button',
+    className: 'inspector-tab-button' + (props.selected ? ' selected' : ''),
     onClick: () => selectInspectorTab(props.tabName)
   },
   props.tabName

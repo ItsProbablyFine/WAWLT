@@ -13,6 +13,11 @@ h3 {
   font-weight: 100;
   font-size: 3rem;
 }
+button {
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
 .app {
   height: 100vh;
   width: 100vw;
@@ -234,11 +239,13 @@ h3 {
   padding: 0;
 }
 .show-inspector-toggle {
+  background: unset;
   border: 0;
   cursor: pointer;
   height: 1.5rem;
   display: flex;
   outline: none;
+  transition: background 0.5s; /* fade out background color on unhover */
   width: 100%;
 }
 .show-inspector-toggle:hover {
@@ -274,6 +281,7 @@ h3 {
   padding-top: .5rem;
 }
 .inspector-left-side {
+  border-right: 1px solid lightgrey;
   display: flex;
   flex-direction: column;
   padding-right: 2rem;
@@ -290,21 +298,24 @@ h3 {
 }
 .inspector-tab-button {
   background: rgb(58,58,58);
+  border: 0;
   border-radius: 0.5rem;
   color: white;
   display: block;
   flex-grow: 1;
-  font-family: 'Helvetica Neue';
-  font-size: 1rem;
-  margin-bottom: 0;
+  font-family: monospace;
+  font-size: 1.2rem;
+  margin: 1px;
   padding: 0.2rem 0.5rem;
   text-align: left;
   width: 100%;
-  letter-spacing: 0.1rem;
   text-transform: capitalize;
 }
 .inspector-tab-button.selected {
-  background: rgb(8,8,8);
+  background: black;
+}
+.inspector-tab-button:hover {
+  background: rgb(30,30,30);
 }
 .inspector-tab {
   border-color: grey;
@@ -313,6 +324,7 @@ h3 {
   border-width: thin;
   flex-grow: 1;
   padding: 1rem;
+  margin-left: 2rem;
   margin-top: 1.5rem;
 }
 
