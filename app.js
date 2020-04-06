@@ -482,14 +482,19 @@ const inspectorTabNames = [
 
 function InspectorWrapper(props) {
   return e('div', {className: 'inspector-wrapper'},
-    e('div', {className: 'inspector-left-side'},
-      e('h3', null, 'What\'s happening?'),
-      // tab buttons
-      e('div', {className: 'inspector-tab-buttons'},
-        inspectorTabNames.map((tabName) => e(InspectorTabButton, {key: tabName, tabName}))
-      )
+    e('div', {className: 'show-inspector-toggle', onClick: toggleInspectorActive}, 
+      e('div', {className: 'arrow'})
     ),
-    e('div', {className: 'inspector-tab ' + props.currentInspectorTab}, `the ${props.currentInspectorTab} tab`)
+    e('div', {className: 'inspector-content'},
+      e('div', {className: 'inspector-left-side'},
+        e('h3', null, 'What\'s happening?'),
+        // tab buttons
+        e('div', {className: 'inspector-tab-buttons'},
+          inspectorTabNames.map((tabName) => e(InspectorTabButton, {key: tabName, tabName}))
+        )
+      ),
+      e('div', {className: 'inspector-tab ' + props.currentInspectorTab}, `the ${props.currentInspectorTab} tab`)
+    )
   );
 }
 

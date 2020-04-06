@@ -23,7 +23,7 @@ h3 {
   grid-template-rows: 3fr 2fr;
 }
 .app.inspector-inactive {
-  grid-template-rows: 1fr 3rem;
+  grid-template-rows: 1fr 2rem;
 }
 
 /* generics/reusables? */
@@ -221,14 +221,57 @@ h3 {
 .inspector-wrapper {
   background: rgb(238,238,238);
   display: flex;
-  flex-flow: row wrap;
-  padding: 2rem;
+  flex-flow: column wrap;
+  padding: 0;
   box-shadow: 0px -5px 20px grey;
   z-index: 1; /* so shadow appears over main */
 }
-.inspector-inactive .inspector-left-side, 
-.inspector-inactive .inspector-tab {
+/* .inspector-active/inactive is a class on the whole .app div */
+.inspector-inactive .inspector-content {
   display: none;
+}
+.inspector-inactive .inspector-wrapper {
+  padding: 0;
+}
+.show-inspector-toggle {
+  border: 0;
+  cursor: pointer;
+  height: 1.5rem;
+  display: flex;
+  outline: none;
+  width: 100%;
+}
+.show-inspector-toggle:hover {
+  background: #d6d6d6;
+  /*box-shadow: 0px 8px 10px #d6d6d6;*/
+  transition: 0.3s;
+}
+.inspector-inactive .show-inspector-toggle {
+  height: 100%;
+}
+.arrow {
+  height: 0; 
+  width: 0; 
+  margin: auto;
+}
+/* arrow up */
+.inspector-inactive .arrow {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #3a3a3a;
+}
+/* arrow down */
+.inspector-active .arrow {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #3a3a3a;
+}
+.inspector-content {
+  display: flex;
+  flex: 1; /* fill available space */
+  flex-flow: row wrap;
+  padding: 2rem;
+  padding-top: .5rem;
 }
 .inspector-left-side {
   display: flex;
@@ -270,6 +313,7 @@ h3 {
   border-width: thin;
   flex-grow: 1;
   padding: 1rem;
+  margin-top: 1.5rem;
 }
 
 /* author goals editor */
