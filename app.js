@@ -492,6 +492,14 @@ const inspectorTabNames = [
 ];
 
 function InspectorWrapper(props) {
+  // Build inspector tab content; start with placeholder until we've made a component for each tab
+  let currentInspectorTabContent = e('div', {className: 'inspector-tab ' + props.currentInspectorTab},
+      `the ${props.currentInspectorTab} tab`
+    );
+  if (props.currentInspectorTab === "characters") {
+    currentInspectorTabContent = e(CharacterInspectorTab, {inspectedCharacter: props.currentlyInspected.character});
+  }
+
   return e('div', {className: 'inspector-wrapper'},
     e('div', {className: 'show-inspector-toggle', onClick: toggleInspectorActive}, 
       e('div', {className: 'arrow'})
@@ -505,7 +513,7 @@ function InspectorWrapper(props) {
             {key: tabName, tabName, selected: tabName === props.currentInspectorTab}))
         )
       ),
-      e(InspectorTab, {currentInspectorTab: props.currentInspectorTab, currentlyInspected: props.currentlyInspected})
+      currentInspectorTabContent
     )
   );
 }
@@ -519,22 +527,12 @@ function InspectorTabButton(props) {
   );
 }
 
-function InspectorTab(props) {
-  if (props.currentInspectorTab === "characters") {
-    return e(CharacterInspectorTab, {inspectedCharacter: props.currentlyInspected.character});
-  } else {
-    return e('div', {className: 'inspector-tab ' + props.currentInspectorTab},
-      `the ${props.currentInspectorTab} tab`
-    );
-  }
-}
-
 function CharacterInspectorTab(props) {
   return e('div', {className: 'inspector-tab characters'},
-      e('div', {className: 'character-list'},
-        Sim.getAllCharacterNames().map((characterName) => e(CharacterPreview,
-          {key: characterName, characterName, selected: characterName === props.inspectedCharacter}))
-      )
+    e('div', {className: 'character-list'},
+      Sim.getAllCharacterNames().map((characterName) => e(CharacterPreview,
+        {key: characterName, characterName, selected: characterName === props.inspectedCharacter}))
+    )
   );
 }
 
