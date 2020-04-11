@@ -338,6 +338,11 @@ button {
   margin-top: 1.5rem;
 }
 
+/* character inspector tab */
+.character-preview.selected {
+  font-weight: bold;
+}
+
 /* author goals editor */
 .author-goals-editor {
   display: none; /* Hidden by default */

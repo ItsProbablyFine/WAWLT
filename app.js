@@ -30,6 +30,9 @@ const appState = {
     {type: "castSuspicionOnCharacter", params: [Sim.getAllCharacterNames()[0]]},
     {type: "escalateTensionBetweenValues", params: ["comfort", "survival"]}
   ],
+  currentlyInspected: {
+    character: Sim.getAllCharacterNames()[0]
+  },
   currentChapterID: 1,
   currentInspectorTab: 'characters',
   inspectorActive: true,
@@ -292,6 +295,14 @@ function toggleInspectorActive() {
   renderUI();
 }
 
+function inspectCharacter(characterName) {
+  // TODO change inspector tab if we aren't on characters tab already? And activate inspector if inactive?
+  // since we'll eventually be able to select a character to inspect from anywhere,
+  // or at least from other investigator tabs
+  appState.currentlyInspected.character = characterName; // Should this be a character ID?
+  renderUI();
+}
+
 // author goal editor state changes
 
 function addAuthorGoal() {
@@ -494,7 +505,7 @@ function InspectorWrapper(props) {
             {key: tabName, tabName, selected: tabName === props.currentInspectorTab}))
         )
       ),
-      e('div', {className: 'inspector-tab ' + props.currentInspectorTab}, `the ${props.currentInspectorTab} tab`)
+      e(InspectorTab, {currentInspectorTab: props.currentInspectorTab, currentlyInspected: props.currentlyInspected})
     )
   );
 }
@@ -506,6 +517,34 @@ function InspectorTabButton(props) {
   },
   props.tabName
   );
+}
+
+function InspectorTab(props) {
+  if (props.currentInspectorTab === "characters") {
+    return e(CharacterInspectorTab, {inspectedCharacter: props.currentlyInspected.character});
+  } else {
+    return e('div', {className: 'inspector-tab ' + props.currentInspectorTab},
+      `the ${props.currentInspectorTab} tab`
+    );
+  }
+}
+
+function CharacterInspectorTab(props) {
+  return e('div', {className: 'inspector-tab characters'},
+      e('div', {className: 'character-list'},
+        Sim.getAllCharacterNames().map((characterName) => e(CharacterPreview,
+          {key: characterName, characterName, selected: characterName === props.inspectedCharacter}))
+      )
+  );
+}
+
+// little character card with portrait and name
+function CharacterPreview(props) {
+  return e('div', {
+    className: 'character-preview' + (props.selected ? ' selected' : ''),
+    onClick: () => inspectCharacter(props.characterName)
+  },
+  props.characterName);
 }
 
 function AuthorGoalsEditor(props) {
