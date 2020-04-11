@@ -487,7 +487,7 @@ function InspectorWrapper(props) {
     ),
     e('div', {className: 'inspector-content'},
       e('div', {className: 'inspector-left-side'},
-        e('h3', null, 'What\'s happening?'),
+        e('h3', null, 'What is happening?'),
         // tab buttons
         e('div', {className: 'inspector-tab-buttons'},
           inspectorTabNames.map((tabName) => e(InspectorTabButton, 
