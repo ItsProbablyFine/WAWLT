@@ -159,12 +159,14 @@ const allHooks = [
 function generateCharacter(db) {
   const takenNames = getAllCharacterNames(db);
   const validNames = allNames.filter((n) => takenNames.indexOf(n) === -1);
+  const values = shuffle(allValues).slice(0, 2);
   const curse = randNth([randNth(allCurses), null]);
   const hook = randNth([randNth(allHooks), null, null, null, null, null, null, null]);
   const entity = {
     type: 'char',
     name: randNth(validNames),
-    value: shuffle(allValues).slice(0, 2),
+    value: values,
+    opposingValue: randNth(allValues.filter((v) => values.indexOf(v) === -1)),
     curse: shuffle(allCurses).slice(0, randInt(1, 2)),
     role: randNth(weightedAllRoles),
     romanceTarget: 'nobody',
