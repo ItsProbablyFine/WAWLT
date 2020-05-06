@@ -7,8 +7,9 @@
 window.Sim = (function(){
 
 /// QUERY RULES
+// A set of DataScript rules for deriving new facts from existing db facts
 
-Felt.setQueryRules(`[
+const queryRules = `[
 
 [(eventSequence ?e1 ?e2)
  [?e1 "type" "event"] [?e2 "type" "event"]
@@ -22,7 +23,9 @@ Felt.setQueryRules(`[
  [?ship "type" "ship"] [?ship "source" ?c1] [?ship "target" ?c2]
  [?ship "charge" ?charge] [(< ?charge 0)]]
 
-]`);
+]`;
+
+Felt.setQueryRules(queryRules);
 
 /// GENERATION FUNCTIONS
 
@@ -288,6 +291,10 @@ return {
   // Return the current simulation state as a DataScript DB.
   getDB: function() {
     return gameDB;
+  },
+  // Query the DataScript DB.
+  q: function(query) {
+    return datascript.q(query, Sim.getDB(), queryRules);
   },
   // Set the player character's name within the simulation.
   setPlayerName: function(playerName) {
