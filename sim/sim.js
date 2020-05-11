@@ -164,7 +164,7 @@ function generateCharacter(db) {
   const validNames = allNames.filter((n) => takenNames.indexOf(n) === -1);
   const values = shuffle(allValues).slice(0, 2);
   const curse = randNth([randNth(allCurses), null]);
-  const hook = randNth([randNth(allHooks), null, null, null, null, null, null, null]);
+  const hook = randNth([randNth(allHooks), null, null, null]);//, null, null, null, null]);
   const entity = {
     type: 'char',
     name: randNth(validNames),
@@ -285,6 +285,57 @@ function runSiftingPatterns() {
   return newNuggets;
 }
 
+/// DATABASE QUERY FUNCTIONS
+
+// check if a given db attribute (e.g., "type", "value") has cardinality 'many' according to the schema.
+// otherwise it's 'one', meaning the attribute associates a single value with an entity
+function isAttributeManyValued(attr) {
+  if (schema[attr] 
+    && schema[attr][':db/cardinality'] 
+    && schema[attr][':db/cardinality'] === ':db.cardinality/many') {
+    return true;
+  }
+  else return false;
+}
+
+// returns all db attribute values for an entity with the given id or name
+function getAllEntityAttributes(identifier) {
+  let entity = {};
+  if (typeof identifier === "string") {
+    entity.id = Sim.q(`[:find ?eid . :where [?eid "name" "${identifier}"]]`);
+  } else if (typeof identifier === "number") {
+    entity.id = identifier;
+  }
+  if (entity.id === null) {
+    throw Error(`No entity with name ${identifier}`);
+  }
+
+  // find all attributes of any entity of this type
+  // so will get an attribute (like "hook") if just one entity of this type has it
+  // using the collection find spec [?_ ...] to keep each attr from getting wrapped in a 1-tuple
+  const attributes = Sim.q(`[:find [?attr ...] :where [${entity.id} "type" ?t][?e "type" ?t][?e ?attr]]`);
+
+  attributes.forEach (attr => {
+    if (isAttributeManyValued(attr)) {
+      // if attribute is multi-valued, use the collection find spec to group values into flat array
+      entity[attr] = Sim.q(`[:find [?value ...] :where [${entity.id} "${attr}" ?value]]`);
+    } else {
+      // use the scalar find spec (return a single value of a single variable, no tuple-wrapping)
+      entity[attr] = Sim.q(`[:find ?value . :where [${entity.id} "${attr}" ?value]]`);
+    }
+  });
+  return entity;
+}
+
+// returns all db attribute values for a character entity with the given id or name
+function getAllInfoAboutCharacter(identifier) {
+  let char = getAllEntityAttributes(identifier);
+  if (Sim.q(`[:find ?t . :where [${char.id} "type" ?t]]`) !== "char") {
+    throw Error(`No character with name ${identifier}`);
+  }
+  return char;
+}
+
 /// return Sim singleton object
 
 return {
@@ -354,7 +405,9 @@ return {
     simEventHandlers.push(handler);
   },
   // Run all registered sifting patterns over the database. Return all new nuggets that are found.
-  runSiftingPatterns: runSiftingPatterns
+  runSiftingPatterns: runSiftingPatterns,
+  getAllInfoAboutCharacter: getAllInfoAboutCharacter,
+  getAllEntityAttributes: getAllEntityAttributes
 }
 
 })();
