@@ -303,17 +303,21 @@ function getAllEntityAttributes(identifier) {
   let entity = {};
   if (typeof identifier === "string") {
     entity.id = Sim.q(`[:find ?eid . :where [?eid "name" "${identifier}"]]`);
+    if (entity.id === null) {
+      throw Error(`No entity with name ${identifier}`);
+    }
   } else if (typeof identifier === "number") {
-    entity.id = identifier;
-  }
-  if (entity.id === null) {
-    throw Error(`No entity with name ${identifier}`);
+    entity.id = identifier; // entity IDs are not suitable for existence tests
   }
 
   // find all attributes of any entity of this type
   // so will get an attribute (like "hook") if just one entity of this type has it
   // using the collection find spec [?_ ...] to keep each attr from getting wrapped in a 1-tuple
   const attributes = Sim.q(`[:find [?attr ...] :where [${entity.id} "type" ?t][?e "type" ?t][?e ?attr]]`);
+  // If no attributes, safe to assume this entity doesn't exist
+  if (attributes.length === 0) {
+    throw Error(`No entity with id ${identifier}`);
+  }
 
   attributes.forEach (attr => {
     if (isAttributeManyValued(attr)) {
@@ -333,6 +337,7 @@ function getAllInfoAboutCharacter(identifier) {
   if (Sim.q(`[:find ?t . :where [${char.id} "type" ?t]]`) !== "char") {
     throw Error(`No character with name ${identifier}`);
   }
+  // TODO institutions, projects, relationships/impressions, events
   return char;
 }
 
