@@ -25,10 +25,12 @@ const appState = {
     }
   ],
   currentAuthorGoals: [
+  /*
     {type: "castSuspicionOnCharacter", params: [Sim.getAllCharacterNames()[0]]},
     {type: "escalateTensionBetweenValues", params: ["comfort", "survival"]},
     {type: "castSuspicionOnCharacter", params: [Sim.getAllCharacterNames()[0]]},
     {type: "escalateTensionBetweenValues", params: ["comfort", "survival"]}
+  */
   ],
   currentlyInspected: {
     character: Sim.getAllCharacterNames()[0]
