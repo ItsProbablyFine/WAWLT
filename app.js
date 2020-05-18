@@ -215,9 +215,10 @@ function actionMatchesFilterString(suggested, filterString) {
   // if no filter string specified, then all actions match – return true
   if (!filterString || filterString.trim() === '') return true;
   // render the action's tagline so we can check it against the filter string
-  const renderedTagline = renderActionTagline(suggested.action, suggested.bindings);
+  // (convert both rendered tagline and filter string to all lowercase for case insensitive searching)
+  const renderedTagline = renderActionTagline(suggested.action, suggested.bindings).toLowerCase();
   // split the filter string into parts and check whether the tagline includes each part
-  const filterStringParts = filterString.split('|');
+  const filterStringParts = filterString.toLowerCase().split('|');
   for (let part of filterStringParts) {
     if (!renderedTagline.includes(part)) return false;
   }
@@ -302,6 +303,7 @@ function inspectCharacter(characterName) {
   // since we'll eventually be able to select a character to inspect from anywhere,
   // or at least from other investigator tabs
   appState.currentlyInspected.character = characterName; // Should this be a character ID?
+  console.log(Sim.getAllInfoAboutCharacter(characterName));
   renderUI();
 }
 
