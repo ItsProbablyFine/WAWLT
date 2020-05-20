@@ -157,23 +157,28 @@ function registerEffectHandler(name, handler) {
 
 /// COMMIT EVENTS TO DB
 
-// Throw an error if `effect` doesn't contain exactly the keys in `desiredKeys`.
-function checkEffectKeys(effect, desiredKeys) {
-  desiredKeys = desiredKeys.concat(['type', 'cause']);
+// Throw an error if `effect` doesn't contain at least the keys in `requiredKeys`.
+// Or, if it contains more, throw a warning if they aren't in the optional `optionalKeys` list.
+function checkEffectKeys(effect, requiredKeys, optionalKeys) {
+  requiredKeys = requiredKeys.concat(['type', 'cause']);
   let actualKeys = Object.keys(effect);
-  let missingKeys = desiredKeys.filter(key => actualKeys.indexOf(key) === -1);
-  let extraKeys = actualKeys.filter(key => desiredKeys.indexOf(key) === -1);
-  if (missingKeys.length > 0 || extraKeys.length > 0) {
+  let missingKeys = requiredKeys.filter(key => actualKeys.indexOf(key) === -1);
+  const requiredAndOptionalKeys = optionalKeys? requiredKeys.concat(optionalKeys) : requiredKeys;
+  let extraKeys = actualKeys.filter(key => requiredAndOptionalKeys.indexOf(key) === -1);
+  if (missingKeys.length > 0) {
     let msg = 'Incorrect keys for ' + effect.type + ' effect\n' +
-              '  Expected keys: ' + desiredKeys.join(', ') + '\n' +
-              '  Actual keys: ' + actualKeys.join(', ');
+              '  Expected keys: ' + requiredKeys.join(', ') + '\n' +
+              '  Actual keys: ' + actualKeys.join(', ') + '\n' +
+              '  Missing keys: ' + missingKeys.join(', ');
     let err = Error(msg);
     err.effect = effect;
-    err.desiredKeys = desiredKeys;
+    err.requiredKeys = requiredKeys;
     err.actualKeys = actualKeys;
     err.missingKeys = missingKeys;
-    err.extraKeys = extraKeys;
     throw err;
+  }
+  if (extraKeys.length > 0) {
+    console.warn (`Warning: The effect ${effect.type} doesn't expect keys: ${extraKeys.join(', ')}`);
   }
 }
 
