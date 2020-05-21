@@ -48,7 +48,11 @@ Felt.registerEffectHandler('addImpression', function(db, effect) {
     });
   }
   if (dropLowestValueExistingImpression) {
-    db = deleteEntity(db, impressionToDrop);
+    console.log (`More than 3 ${newImpressionValence>0?"positive":"negative"} impressions held by \
+${Sim.getCharacterNameByID(effect.source)} about ${Sim.getCharacterNameByID(effect.target)}, \
+so dropping the lowest-magnitude one:`);
+    console.log(lowestValueExistingImpression);
+    db = deleteEntity(db, lowestValueExistingImpression[':db/id'][0]);
   }
 
   // update the overall numerical charge from source to target by summing new impression values

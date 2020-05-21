@@ -331,15 +331,26 @@ function getAllEntityAttributes(identifier) {
   return entity;
 }
 
+function getEntityAttributeByEID(eid, attr) {
+  // TODO maybe some error-checking
+  return Sim.q(`[:find ?value . :where [${eid} "${attr}" ?value]]`);
+}
+
 // returns all db attribute values for a character entity with the given id or name
 function getAllInfoAboutCharacter(identifier) {
   let char = getAllEntityAttributes(identifier);
   if (Sim.q(`[:find ?t . :where [${char.id} "type" ?t]]`) !== "char") {
     throw Error(`No character with name ${identifier}`);
   }
-  // TODO institutions, projects, relationships/impressions, events
+  // TODO add institutions, projects, relationships/impressions, events to char
   return char;
 }
+
+function getCharacterNameByID(eid) {
+  // TODO maybe some error-checking
+  return Sim.q(`[:find ?n . :where [${eid} "name" ?n]]`);
+}
+
 
 /// return Sim singleton object
 
@@ -412,7 +423,9 @@ return {
   // Run all registered sifting patterns over the database. Return all new nuggets that are found.
   runSiftingPatterns: runSiftingPatterns,
   getAllInfoAboutCharacter: getAllInfoAboutCharacter,
-  getAllEntityAttributes: getAllEntityAttributes
+  getAllEntityAttributes: getAllEntityAttributes,
+  getEntityAttributeByEID: getEntityAttributeByEID,
+  getCharacterNameByID: getCharacterNameByID
 }
 
 })();
