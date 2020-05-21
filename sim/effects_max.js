@@ -1,7 +1,7 @@
 // max effects here!
 
 Felt.registerEffectHandler('addImpression', function(db, effect) {
-  Felt.checkEffectKeys(effect, ['reason', 'source', 'target', 'value']);
+  Felt.checkEffectKeys(effect, ['source', 'target', 'value'], ['tag', 'reason']);
 
   if (effect.value === 0) {
     const err = Error("addImpression effect value can't be 0!")
@@ -36,16 +36,19 @@ Felt.registerEffectHandler('addImpression', function(db, effect) {
 
   // actually update the DB as needed
   if (addNewImpression) {
-    db = createEntity(db, {
+    let newImpressionObj = {
       type: 'impression',
       source: effect.source,
       target: effect.target,
       value: effect.value,
       // record the ID of the introspection event that produced this impression,
       // so we can get at the underlying causes later on
-      cause: effect.cause,
-      reason: effect.reason // short textual description of why this impression formed, from the perspective of c1
-    });
+      cause: effect.cause
+    }
+    if (effect.tag) newImpressionObj.tag = effect.tag;
+    // reason: short textual description of why this impression formed, from the perspective of c1
+    if (effect.reason) newImpressionObj.reason = effect.reason;
+    db = createEntity(db, newImpressionObj);
   }
   if (dropLowestValueExistingImpression) {
     console.log (`More than 3 ${newImpressionValence>0?"positive":"negative"} impressions held by \
