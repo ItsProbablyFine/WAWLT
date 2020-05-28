@@ -17,10 +17,10 @@ const appState = {
     {
       id: 1,
       title: 'The Next One',
-      entries: [
+      entries: [/*
         {id: 0, defaultDesc: 'Chapter started', userDesc: 'foo bar baz'},
         {id: 1, defaultDesc: 'Chapter continued', userDesc: 'testing'},
-        {id: 2, defaultDesc: 'Chapter ended', userDesc: 'end'}
+        {id: 2, defaultDesc: 'Chapter ended', userDesc: 'end'}*/
       ]
     }
   ],
@@ -546,6 +546,10 @@ function CharacterPreview(props) {
     className: 'character-preview' + (props.selected ? ' selected' : ''),
     onClick: () => inspectCharacter(props.characterName)
   },
+  e('img', {
+    src: Sim.getAllInfoAboutCharacter(props.characterName).portrait,
+    className: 'character-portrait'
+  }),
   props.characterName);
 }
 

@@ -33,6 +33,10 @@ function getAllCharacterNames(db) {
   return datascript.q('[:find ?n :where [?c "type" "char"] [?c "name" ?n]]', db).map(vars => vars[0]);
 }
 
+function getAllCharacterPortraits(db) {
+  return datascript.q('[:find ?p :where [?c "type" "char"] [?c "portrait" ?p]]', db).map(vars => vars[0]);
+}
+
 function getAllCharacterPairs(db) {
   return datascript.q('[:find ?c1 ?c2 \
                         :where [?c1 "type" "char"] [?c2 "type" "char"] [(not= ?c1 ?c2)]]', db);
@@ -159,9 +163,13 @@ const allHooks = [
   "social media famous"
 ];
 
+let allPortraits = [];
+
 function generateCharacter(db) {
   const takenNames = getAllCharacterNames(db);
   const validNames = allNames.filter((n) => takenNames.indexOf(n) === -1);
+  const takenPortraits = getAllCharacterPortraits(db);
+  const validPortraits = allPortraits.filter((n) => takenPortraits.indexOf(n) === -1);
   const values = shuffle(allValues).slice(0, 2);
   const curse = randNth([randNth(allCurses), null]);
   const hook = randNth([randNth(allHooks), null, null, null]);//, null, null, null, null]);
@@ -174,6 +182,7 @@ function generateCharacter(db) {
     role: randNth(weightedAllRoles),
     romanceTarget: 'nobody',
     romanceState: 'single',
+    portrait: randNth(validPortraits)
   };
   if (hook) entity.hook = hook;
   console.log(entity);
@@ -218,7 +227,14 @@ let schema = {
 };
 let gameDB = datascript.empty_db(schema);
 
-for (let i = 0; i < 10; i++){
+const numCharacters = 10;
+
+// populate allPortraits (expects images of the format: "img/portrait_01.png")
+for (let i = 0; i < numCharacters; i++){
+  allPortraits.push(`img/portrait_${(i+1).toString().padStart(2, '0')}.png`);
+}
+
+for (let i = 0; i < numCharacters; i++){
   gameDB = generateCharacter(gameDB);
 }
 // generate relationships
