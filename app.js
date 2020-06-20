@@ -503,11 +503,14 @@ function TranscriptEntry(props) {
 }
 
 function ActionStagingArea(props) {
-  return e('div', {className: 'action-staging-area'},
-    // TODO make StagedAction ids from action name and bindings instead of using index
-    props.stagedActions.map((action, idx) => e(StagedAction, {key: idx, action})),
-    e('button', {className: 'run-actions', onClick: runStagedActions}, 'Run Actions')
-  );
+  if (props.stagedActions.length > 0) {
+    return e('div', {className: 'action-staging-area'},
+      // TODO make StagedAction ids from action name and bindings instead of using index
+      props.stagedActions.map((action, idx) => e(StagedAction, {key: idx, action})),
+      e('button', {className: 'run-actions', onClick: runStagedActions},
+        (props.stagedActions.length > 1) ? 'Run Actions' : 'Run Action')
+    );
+  } else return null; // stage only appears if at least one action staged
 }
 
 function StagedAction(props) {
@@ -515,10 +518,13 @@ function StagedAction(props) {
   // (but don't use any potentially nondeterministic properties returned from event(), like text,
   // since we aren't actually performing this action yet, just staging it)
   const realizedEvent = Felt.realizeEvent(props.action.action, props.action.bindings);
+  // dont die if action didn't define effects
+  const effectsComponents = realizedEvent.effects ? 
+    realizedEvent.effects.map((effect, idx) => e(ActionEffect, {key: idx, effect})) : null;
   return e('div', {className: 'staged-action'},
     e('div', {className: 'tagline'}, renderActionTagline(props.action.action, props.action.bindings)),
     // TODO make ActionEffect ids from renderEffectDescription (minus white space) instead of using index??
-    realizedEvent.effects.map((effect, idx) => e(ActionEffect, {key: idx, effect}))
+    effectsComponents
   );
 }
 
