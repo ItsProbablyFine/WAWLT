@@ -9,20 +9,20 @@ const appState = {
       id: 0,
       title: 'The Beginning',
       entries: [
-        {id: 0, defaultDesc: 'Story started', userDesc: 'foo bar baz'},
+        /*{id: 0, defaultDesc: 'Story started', userDesc: 'foo bar baz'},
         {id: 1, defaultDesc: 'Story continued', userDesc: 'testing'},
-        {id: 2, defaultDesc: 'Story ended', userDesc: 'end'}
+        {id: 2, defaultDesc: 'Story ended', userDesc: 'end'}*/
       ]
-    },
+    }/*,
     {
       id: 1,
       title: 'The Next One',
-      entries: [/*
+      entries: [
         {id: 0, defaultDesc: 'Chapter started', userDesc: 'foo bar baz'},
         {id: 1, defaultDesc: 'Chapter continued', userDesc: 'testing'},
-        {id: 2, defaultDesc: 'Chapter ended', userDesc: 'end'}*/
+        {id: 2, defaultDesc: 'Chapter ended', userDesc: 'end'}
       ]
-    }
+    }*/
   ],
   currentAuthorGoals: [
   /*
@@ -35,11 +35,12 @@ const appState = {
   currentlyInspected: {
     character: Sim.getAllCharacterNames()[0]
   },
-  currentChapterID: 1,
+  currentChapterID: 0,
   currentInspectorTab: 'characters',
   inspectorActive: true,
   suggestedActions: Sim.getSuggestedActions(),
-  suggestionsFilterString: ''
+  suggestionsFilterString: '',
+  stagedActions: []
 };
 
 function getCurrentChapter() {
@@ -225,6 +226,45 @@ function actionMatchesFilterString(suggested, filterString) {
   return true;
 }
 
+// rendering action effects for transcript
+
+// Mapping of effect types to descriptions as they'll appear to players, in action staging area.
+// Can reference the effect's properties, which vary by type, using ?key syntax.
+// If the effect property stores a database entity id, you can get any of that entity's db attributes
+// with ?key.attr syntax. If an effect property is an array (e.g., startProject's contributors,
+// it'll be unraveled and treated as mutliple eids
+const effectDescription = {
+  startProject: `?contributors.name start new project`,
+  leaveProject: `?contributor.name is no longer a contributor on ?project.projectName`,
+  joinProject: `?contributor.name is added as contributor to ?project.projectName`,
+  updateProjectState: `?project.projectName becomes ?newState`,
+  increaseProjectDrama: `?project.projectName becomes more dramatic`,
+  addImpression: `?source.name forms a ?value ?tag impression of ?target.name`
+};
+
+// Produce a player-facing effect description for a given bound effect object (from Felt.realizeEvent())
+function renderEffectDescription(effect) {
+  let description = effectDescription[effect.type] || '';
+  // match any ?prop.attr variables in the effectDescription
+  // ?prop.attr means the prop stores an eid, and we want to query the db for the entity's attribute
+  // (the backslash is an escape in string literals, so need to double escape ? and .)
+  // expects only letters in effect property names and entity attribute names, may change later
+  // use groups () to capture ?(key).(attr)
+  let attr_re = new RegExp(`\\?([a-zA-Z]+)\\.([a-zA-Z]+)`, 'g');
+  description = description.replace(attr_re,(full,key,attr) => {
+    if (Array.isArray(effect[key])) { // if array, query for attribute of each element
+      return effect[key].map((eid)=>Sim.getEntityAttributeByEID(eid,attr)).join(", ");
+    }
+    return Sim.getEntityAttributeByEID(effect[key],attr);
+  })
+  // match and replace non .attr ?props with the effect property (e.g., updateProjectState's "?newState")
+  let prop_re = new RegExp(`\\?([a-zA-Z]+)`, 'g');
+  description = description.replace(prop_re,(full,prop) => {
+    return effect[prop];
+  })
+  return description;
+}
+
 /// state change functions
 
 // transcript state changes
@@ -270,6 +310,36 @@ function rerollActionSuggestions() {
   renderUI();
 }
 
+function addActionToStagingArea(suggested) {
+  // fyi can get effects array from Felt.realizeEvent(), but can't get event.text until it's run
+  appState.stagedActions.push(suggested);
+  rerollActionSuggestions();
+  renderUI();
+}
+
+function runStagedActions() {
+  const chapter = getCurrentChapter();
+  let transcriptEntry = {
+    id: chapter.entries.length,
+    defaultDesc: '', // enventually do things to smoothly transition between multiple action desc.s
+    userDesc: '',
+    events: []
+  };
+  appState.stagedActions.forEach((stagedAction) => {
+    // run action in simulation
+    const event = Sim.runAction(stagedAction.action, stagedAction.bindings);
+    transcriptEntry.defaultDesc += addTerminalPunctuation(event.text) + ' ';
+    transcriptEntry.events.push(event);
+  });
+  // add new combined entry to end of transcript
+  chapter.entries.push(transcriptEntry);
+  // clear action staging area
+  appState.stagedActions = [];
+  // get and render new suggested actions
+  rerollActionSuggestions();
+}
+
+// replaced by addActionToStagingArea() and runStagedActions()
 function runSuggestedAction(suggested) {
   // run selected action in simulation
   const event = Sim.runAction(suggested.action, suggested.bindings);
@@ -413,7 +483,8 @@ function TranscriptWrapper(props) {
     ),
     // actual transcript content
     e('div', {className: 'transcript'},
-      chapter.entries.map((entry) => e(TranscriptEntry, {key: entry.id, entry}))
+      chapter.entries.map((entry) => e(TranscriptEntry, {key: entry.id, entry})),
+      e(ActionStagingArea, {stagedActions: props.stagedActions})
     )
   );
 }
@@ -429,6 +500,34 @@ function TranscriptEntry(props) {
       value: props.entry.userDesc
     })
   );
+}
+
+function ActionStagingArea(props) {
+  return e('div', {className: 'action-staging-area'},
+    // TODO make StagedAction ids from action name and bindings instead of using index
+    props.stagedActions.map((action, idx) => e(StagedAction, {key: idx, action})),
+    e('button', {className: 'run-actions', onClick: runStagedActions}, 'Run Actions')
+  );
+}
+
+function StagedAction(props) {
+  // run the action's event() function so we know its effects
+  // (but don't use any potentially nondeterministic properties returned from event(), like text,
+  // since we aren't actually performing this action yet, just staging it)
+  const realizedEvent = Felt.realizeEvent(props.action.action, props.action.bindings);
+  return e('div', {className: 'staged-action'},
+    e('div', {className: 'tagline'}, renderActionTagline(props.action.action, props.action.bindings)),
+    // TODO make ActionEffect ids from renderEffectDescription (minus white space) instead of using index??
+    realizedEvent.effects.map((effect, idx) => e(ActionEffect, {key: idx, effect}))
+  );
+}
+
+function ActionEffect(props){
+  // TODO use effect description instead of type, also use this for element key in StagedAction
+  // TODO check if this effect type has a description, maybe use effectDescription[props.effect.type]
+  // If there's no template for this effect type in effectDescription map, effect won't be displayed
+  return e('div', {className: 'effect'}, renderEffectDescription(props.effect));
+  // TODO add onlick to cross this effect out (remove it from simulation effects for this action)
 }
 
 function TranscriptAuthorGoal(props) {
@@ -470,7 +569,7 @@ function SuggestedAction(props) {
   return e('div', {className: 'suggested-action'},
     e('div', {
       className: 'tagline',
-      onClick: () => runSuggestedAction(props.suggested)
+      onClick: () => addActionToStagingArea(props.suggested) //runSuggestedAction(props.suggested)
     }, renderActionTagline(props.suggested.action, props.suggested.bindings))
     // TODO more
   );
@@ -536,7 +635,8 @@ function CharacterInspectorTab(props) {
     e('div', {className: 'character-list'},
       Sim.getAllCharacterNames().map((characterName) => e(CharacterPreview,
         {key: characterName, characterName, selected: characterName === props.inspectedCharacter}))
-    )
+    ),
+    e('div', {className: 'character-card'})
   );
 }
 

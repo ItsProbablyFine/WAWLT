@@ -31,6 +31,12 @@ function shuffle(items) {
   return newItems;
 }
 
+// Add a . if sentence doesn't already end in .,!, or ?
+function addTerminalPunctuation(sentence) {
+  let last = sentence.trim().slice(-1);
+  return (last==='.'||last==='!'||last==='?')? sentence : sentence + '.';
+}
+
 // Given the DB, return the EID of the most recently added entity.
 function newestEID(db){
   // FIXME there is probably a better way to do this

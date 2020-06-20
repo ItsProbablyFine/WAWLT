@@ -138,13 +138,13 @@ button {
   overflow-y: scroll;
 }
 .transcript .entry {
-  background: whitesmoke;
+  /*background: whitesmoke;*/
   border-radius: .8rem;
   margin-bottom: .5rem;
   padding: .5rem .8rem;
 }
 .transcript .entry .default-desc {
-  font-weight: bold;
+  /*font-weight: bold;*/
   margin-bottom: 0.5rem;
 }
 .transcript .entry .user-desc {
@@ -160,6 +160,27 @@ button {
   color: grey;
   content: attr(data-default-text);
   font-style: italic;
+}
+.action-staging-area {
+  background: aquamarine;
+  border-radius: .4rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+.staged-action > .effect {
+  font-style: italic;
+  padding: .2rem 1rem;
+  font-size: .9rem;
+  color: cadetblue;
+  font-family: serif;
+}
+.staged-action > .effect:empty {
+   display: none;
+}
+button.run-actions {
+  border-radius: .2rem;
+  margin-top: 1rem;
+  padding: .4rem;
 }
 /* we use this to calculate height for vertically autoresizing transcript entry textareas.
    its text-relevant styles need to be synced up with those of the textareas. */
@@ -307,6 +328,7 @@ button {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  max-height: 14rem;
 }
 .inspector-tab-button {
   background: rgb(58,58,58);
@@ -341,6 +363,7 @@ button {
 /* character inspector tab */
 .inspector-tab.characters {
   border-style: none;
+  display: flex;
   padding: 0;
 }
 .character-list {
@@ -348,7 +371,10 @@ button {
   grid-template-columns: repeat(auto-fill, 5rem);
   grid-auto-rows: 1fr; /* equal height rows */
   grid-gap: .5rem;
-  width: 50%;
+  flex: 1;
+  height: fit-content;
+  max-height: 16rem;
+  overflow: scroll;
 }
 .character-preview {
   background: white;
@@ -370,6 +396,10 @@ button {
 .character-portrait {
   object-fit: cover;
   width: 100%;
+}
+.character-card {
+  background: white;
+  flex: 1;
 }
 
 /* author goals editor */
