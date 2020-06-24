@@ -642,7 +642,7 @@ function CharacterInspectorTab(props) {
       Sim.getAllCharacterNames().map((characterName) => e(CharacterPreview,
         {key: characterName, characterName, selected: characterName === props.inspectedCharacter}))
     ),
-    e('div', {className: 'character-card'})
+    e(CharacterCard, {character: props.inspectedCharacter})
   );
 }
 
@@ -657,6 +657,32 @@ function CharacterPreview(props) {
     className: 'character-portrait'
   }),
   props.characterName);
+}
+
+// zoomed-in character card
+function CharacterCard(props) {
+  let character = Sim.getAllInfoAboutCharacter(props.character);
+  console.log (character);
+  return e('div', {className: 'inspector-card character-card'},
+    e('img', {className: 'character-portrait', src: Sim.getAllInfoAboutCharacter(character.name).portrait}),
+    e('div', {className: 'inspector-card-text'},
+      e('p', {className: 'inspector-card-name'}, character.name),
+      e('p', {}, character.role),
+      e(Label, {label: 'Values', value: character.value.join(', ')}),
+      e(Label, {label: 'Opposes', value: character.opposingValue}),
+      e(Label, {label: 'Curses', value: character.curse.join(', ')})
+    ),
+    e('div', {className: 'muted small'},
+        "🚧 Relationships, projects, situations, and events related to this character coming soon!")
+  );
+}
+
+function Label(props) {
+  // requires a label and a value
+  return e('p', {},
+    e('strong', {}, props.label + ": "),
+    props.value
+  );
 }
 
 function AuthorGoalsEditor(props) {

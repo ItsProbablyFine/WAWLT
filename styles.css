@@ -354,10 +354,10 @@ button.run-actions {
   border-radius: .5rem;
   border-style: dashed;
   border-width: thin;
+  flex-basis: 0;
   flex-grow: 1;
-  padding: 1rem;
   margin-left: 2rem;
-  margin-top: 1.5rem;
+  margin-top: .5rem;
 }
 
 /* character inspector tab */
@@ -375,6 +375,7 @@ button.run-actions {
   height: fit-content;
   max-height: 16rem;
   overflow: scroll;
+  padding: 15px;
 }
 .character-preview {
   background: white;
@@ -393,13 +394,32 @@ button.run-actions {
   box-shadow: 0px 0px 14px grey;
   font-weight: bold;
 }
-.character-portrait {
+.character-preview > .character-portrait {
   object-fit: cover;
   width: 100%;
 }
-.character-card {
+.inspector-card {
   background: white;
+  border-radius: .4rem;
   flex: 1;
+  padding: 1rem;
+  max-height: 16rem;
+  overflow: scroll;
+}
+.character-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.inspector-card-name {
+  font-family: serif;
+  font-style: italic;
+  font-size: 2rem;
+}
+.character-card > .character-portrait {
+  float: left;
+  width: 11rem;
 }
 
 /* author goals editor */
@@ -451,4 +471,11 @@ button.run-actions {
   padding: 0.5rem;
   /*text-align: center;*/
   width: 100%;
+}
+
+.small {
+  font-size: .7rem;
+}
+.muted {
+  color: grey;
 }
