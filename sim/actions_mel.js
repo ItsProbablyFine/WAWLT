@@ -226,6 +226,32 @@ Felt.registerAction('tryToExplainProject', {
   }
 });
 
+Felt.registerAction('wishIWasThem', {
+  tagline: '?n1: Wish they were a little more like ?n2',
+  where: [
+    '?c1 "type" "char"',
+    '?c2 "type" "char"',
+    '(not= ?c1 ?c2)',
+    '?imp "type" "impression"',
+    '?imp "source" ?c1',
+    '?imp "target" ?c2',
+    '?imp "cause" ?e1',
+    '?imp "tag" "role_model"', // Need to form impressions with tag: role_model 
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2'
+  ],
+  event: function(vars){
+    return {
+      actor: vars.c1,
+      target: vars.c2,
+      effects: [],
+      text: `${vars.n1} wished they were a little more like ${vars.n2}`,
+      reference: ``,
+      tags: []
+    };
+  }
+});
+
 Felt.registerAction('beginCorrespondence', {
   tagline: '?n1: Begin a correspondence with ?n2',
   where: [
