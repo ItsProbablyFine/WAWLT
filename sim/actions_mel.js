@@ -226,63 +226,30 @@ Felt.registerAction('tryToExplainProject', {
   }
 });
 
+Felt.registerAction('beginCorrespondence', {
+  tagline: '?n1: Begin a correspondence with ?n2',
+  where: [
+    '?c1 "type" "char"',
+    '?c2 "type" "char"',
+    '(not= ?c1 ?c2)',
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2'
+  ],
+  event: function(vars){
+    return {
+      actor: vars.c1,
+      target: vars.c2,
+      effects: [], // begin ongoing correspondence situation?
+      text: `${vars.n1} began a correspondence with ${vars.n2}`,
+      reference: ``,
+      tags: []
+    };
+  }
+});
+
 // DEBUGGING ACTIONS
 
 /*
-// a placeholder introspection action that can always be performed, for debugging
-Felt.registerAction('placeholderIntrospection', {
-  tagline: '[i] ?n1: randomly introspect about ?n2',
-  where: [
-    '?c1 "type" "char"',
-    '?c2 "type" "char"',
-    '(not= ?c1 ?c2)',
-    // extra info for display purposes
-    '?c1 "name" ?n1',
-    '?c2 "name" ?n2'
-  ],
-  event: function(vars){
-    return {
-      actor: vars.c1,
-      target: vars.c2,
-      effects: [
-        {
-        	type: 'addImpression', source: vars.c1, target: vars.c2, value: +1, //tag: "indifferent",
-        	reason: `${vars.n2} did something awkward`
-      	}
-      ],
-      text: `${vars.n1} randomly thought about ${vars.n2} and came to the conclusion that they have no opinion of them`,
-      tags: []
-    };
-  }
-});
-
-// a placeholder introspection action that can always be performed, for debugging
-Felt.registerAction('placeholderIntrospection2', {
-  tagline: '[i] ?n1: randomly wonder about ?n2',
-  where: [
-    '?c1 "type" "char"',
-    '?c2 "type" "char"',
-    '(not= ?c1 ?c2)',
-    // extra info for display purposes
-    '?c1 "name" ?n1',
-    '?c2 "name" ?n2'
-  ],
-  event: function(vars){
-    return {
-      actor: vars.c1,
-      target: vars.c2,
-      effects: [
-        {
-        	type: 'addImpression', source: vars.c1, target: vars.c2, value: +2, tag: "whatever", 
-        	reason: `${vars.n2} is pretty whatever`
-      	}
-      ],
-      text: `${vars.n1} randomly wondered about ${vars.n2} and came to the conclusion that they're whatever`,
-      tags: []
-    };
-  }
-});
-
 // a placeholder introspection action that can always be performed, for debugging
 Felt.registerAction('placeholderIntrospection3', {
   tagline: '[i] ?n1: randomly contemplate ?n2',
