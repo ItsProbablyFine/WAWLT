@@ -11,7 +11,7 @@ Felt.registerAction('betray', {
     effects: [
       {type: 'addAttitude', charge: 'negative', source: vars.c2, target: vars.c1}
     ],
-    text: "🔪 Out of nowhere, " + vars.n1 + " betrayed " + vars.n2 + "!"
+    text: "Out of nowhere, " + vars.n1 + " betrayed " + vars.n2 + "!"
   })
 });
 
@@ -37,8 +37,8 @@ Felt.registerAction('hangOutWith', {
       {type: 'changeAffectionLevel', affection:vars.a1, amount:1},
       {type: 'changeAffectionLevel', affection:vars.a2, amount:1}
     ],
-    text: "🍦 " + vars.n1 + " and " + vars.n2 +
-          " hung out together at the " + randNth(['boba','ice cream','pizza']) + " place."
+    text: vars.n1 + " and " + vars.n2 +
+          " hung out."// together at the " + randNth(['boba','ice cream','pizza']) + " place."
   })
 });
 
@@ -49,11 +49,12 @@ Felt.registerAction('seeCuteAnimal', {
   ],
   event: (vars) => ({
     actor: vars.c1,
-    text: "🐶 " + vars.n1 + " saw a cute " + randNth(['dog','cat','snake']) + "."
+    text: vars.n1 + " saw a cute " + randNth(['dog','cat','snake']) + "."
   })
 });
 
 let allProjectTypes = ['art','craft','poetry','programming','research','writing'];
+// 'embroidery','lithography','metal-working'];
 
 Felt.registerAction('startSoloProject', {
   tagline: '?n1: Start new project',
@@ -72,7 +73,7 @@ Felt.registerAction('startSoloProject', {
       effects: [
         {type: 'startProject', contributors: [vars.c1], projectType, projectName}
       ],
-      text: `🎨 ${vars.n1} started a new project: "${projectName}"!`,
+      text: `${vars.n1} started a new project: "${projectName}"!`,
       tags: ['projects']
     };
   }
@@ -87,7 +88,7 @@ Felt.registerAction('startCollabProject', {
     '(likes ?c2 ?c1)',
     // inspiration event (TODO ensure it's recent?)
     '?e1 "tag" "inspiration"',
-    '?e1 "actor" ?c1',
+    '?e1 "actor" ?c1', // only c1 needs to be inspired, slightly weird but works
     // extra info for display purposes
     '?c1 "name" ?n1',
     '?c2 "name" ?n2'
@@ -100,7 +101,7 @@ Felt.registerAction('startCollabProject', {
       effects: [
         {type: 'startProject', contributors: [vars.c1, vars.c2], projectType, projectName}
       ],
-      text: `🎨 ${vars.n1} and ${vars.n2} started a new project together: "${projectName}"!`,
+      text: `${vars.n1} and ${vars.n2} started a new project together: "${projectName}"!`,
       tags: ['projects']
     };
   }
@@ -132,7 +133,7 @@ Felt.registerAction('persuadePersonToJoinProject', {
       effects: [
         {type: 'joinProject', project: vars.proj, contributor: vars.c2}
       ],
-      text: `🎨 ${vars.n1} persuaded ${vars.n2} to join their project, "${vars.projname}"!`,
+      text: `${vars.n1} persuaded ${vars.n2} to join their project, "${vars.projname}"!`,
       tags: ['projects']
     };
   }
@@ -154,7 +155,7 @@ Felt.registerAction('leaveProjectDueToWorkload', {
     effects: [
       {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
     ],
-    text: `🎨 ${vars.n1} left project "${vars.projname}" because they had too much work to do!`,
+    text: `${vars.n1} left project "${vars.projname}" because they had too much work to do!`,
     tags: ['projects']
   })
 });
@@ -180,7 +181,7 @@ Felt.registerAction('leaveProjectDueToPersonalDifferences', {
     effects: [
       {type: 'leaveProject', project: vars.proj, contributor: vars.c1}
     ],
-    text: `🎨 ${vars.n1} left project "${vars.projname}" because they don't like working with ${vars.n2}`,
+    text: `${vars.n1} left project "${vars.projname}" because they don't like working with ${vars.n2}`,
     tags: ['projects']
   })
 });
@@ -199,7 +200,7 @@ Felt.registerAction('makeProgressOnProject', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} made a lot of progress on "${vars.projname}".`,
+    text: `${vars.n1} made a lot of progress on "${vars.projname}".`,
     tags: ['projects']
   })
 });
@@ -218,7 +219,7 @@ Felt.registerAction('workFruitlesslyOnProject', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} tried to work on "${vars.projname}", but got nowhere.`,
+    text: `${vars.n1} tried to work on "${vars.projname}", but got nowhere.`,
     tags: ['projects']
   })
 });
@@ -239,7 +240,7 @@ Felt.registerAction('abandonProject', {
       {type: 'updateProjectState', project: vars.proj, newState: 'inactive'},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 2}
     ],
-    text: `🎨 ${vars.n1} gave up on "${vars.projname}".`,
+    text: `${vars.n1} gave up on "${vars.projname}".`,
     tags: ['projects']
   })
 });
@@ -260,7 +261,7 @@ Felt.registerAction('resumeProject', {
       {type: 'updateProjectState', project: vars.proj, newState: 'active'},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 2}
     ],
-    text: `🎨 ${vars.n1} started working on "${vars.projname} again!`,
+    text: `${vars.n1} started working on "${vars.projname} again!`,
     tags: ['projects']
   })
 });
@@ -281,7 +282,7 @@ Felt.registerAction('finishProject', {
     effects: [
       {type: 'updateProjectState', project: vars.proj, newState: 'finished'}
     ],
-    text: `🎨 ${vars.n1} finished project "${vars.projname}"!`,
+    text: `${vars.n1} finished project "${vars.projname}"!`,
     tags: ['projects']
   })
 });
@@ -305,7 +306,7 @@ Felt.registerAction('showProject_loved', {
       {type: 'addAttitude', charge: 'positive', source: vars.c1, target: vars.c2},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who loved it ☺️`,
+    text: `${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who loved it`,
     tags: ['projects']
   })
 });
@@ -328,7 +329,7 @@ Felt.registerAction('showProject_neutral', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who was kinda meh about it 😐`,
+    text: `${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who was kinda meh about it`,
     tags: ['projects']
   })
 });
@@ -352,7 +353,7 @@ Felt.registerAction('showProject_hated', {
       {type: 'addAttitude', charge: 'negative', source: vars.c2, target: vars.c1},
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who hated it 😡`,
+    text: `${vars.n1} showed their project "${vars.projname}" to ${vars.n2}, who hated it`,
     tags: ['projects']
   })
 });
@@ -383,7 +384,7 @@ Felt.registerAction('getDiscouraged', {
     effects: [
       {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
     ],
-    text: `🎨 ${vars.n1} considered restarting their abandoned project "${vars.projname}", \
+    text: `${vars.n1} considered restarting their abandoned project "${vars.projname}", \
 but then remembered ${vars.n2}'s negative remarks and decided to leave it alone.`,
     tags: ['projects']
   })
