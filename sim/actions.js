@@ -205,6 +205,30 @@ Felt.registerAction('makeProgressOnProject', {
   })
 });
 
+Felt.registerAction('workOnProjectOutOfSpite', {
+  tagline: '?n1: Work on project "?projname" out of spite',
+  where: [
+    '?c1 "name" ?n1',
+    '?proj "projectContributor" ?c1',
+    '?proj "projectName" ?projname',
+    '?proj "state" "active"',
+    // ?e: ?c1 showed ?proj to ?c2, who hated it
+    '?e "eventType" "showProject_hated"',
+    '?e "actor" ?c1',
+    '?e "project" ?proj'
+    // TODO generalize to anything negative happened around project?
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    project: vars.proj,
+    effects: [
+      {type: 'increaseProjectDrama', project: vars.proj, amount: 1}
+    ],
+    text: `${vars.n1} worked on "${vars.projname}" out of spite.`,
+    tags: ['projects']
+  })
+});
+
 Felt.registerAction('workFruitlesslyOnProject', {
   tagline: '?n1: Work fruitlessly on project "?projname"',
   where: [
