@@ -201,6 +201,29 @@ Felt.registerAction('reflectPositivelyOnAwkwardness', {
   }
 });
 
+Felt.registerAction('inviteOver', {
+  tagline: '?n1: Invite ?n2 over to their house',
+  where: [
+    '?c1 "type" "char"',
+    '?c2 "type" "char"',
+    '(not= ?c1 ?c2)',
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2',
+    // c1 likes c2
+    '(likes ?c1 ?c2)'
+  ],
+  event: function(vars){
+    return {
+      actor: vars.c1,
+      target: vars.c2,
+      effects: [],
+      text: `${vars.n1} invited ${vars.n2} over to their house`,
+      reference: ``,
+      tags: []
+    };
+  }
+});
+
 Felt.registerAction('tryToExplainProject', {
   tagline: '?n1: Try to explain their project to ?n2',
   where: [
