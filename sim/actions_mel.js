@@ -249,6 +249,34 @@ Felt.registerAction('tryToExplainProject', {
   }
 });
 
+Felt.registerAction('askForHelpOnProject', {
+  tagline: '?n1: Ask ?n2 for help on their project "?projname"',
+  where: [
+    '?c1 "type" "char"',
+    '?c2 "type" "char"',
+    '?c1 "name" ?n1',
+    '?c2 "name" ?n2',
+    '(not= ?c1 ?c2)',
+    '(likes ?c1 ?c2)',
+    '?proj "projectContributor" ?c1',
+    '?proj "projectName" ?projname',
+    '?proj "state" "active"',
+    // three increaseProjectDrama events involving c1 and proj
+    '?e1 "tag" "increaseProjectDrama"', '?e1 "actor" ?c1', '?e1 "project" ?proj',
+    '?e2 "tag" "increaseProjectDrama"', '?e2 "actor" ?c1', '?e2 "project" ?proj',
+    '?e3 "tag" "increaseProjectDrama"', '?e3 "actor" ?c1', '?e3 "project" ?proj'
+  ],
+  event: (vars) => ({
+    actor: vars.c1,
+    target: vars.c2,
+    project: vars.proj,
+    effects: [
+    ],
+    text: `${vars.n1} asked ${vars.n2} for help on their project "${vars.projname}"`,
+    tags: ['projects']
+  })
+});
+
 Felt.registerAction('wishIWasThem', {
   tagline: '?n1: Wish they were a little more like ?n2',
   where: [
