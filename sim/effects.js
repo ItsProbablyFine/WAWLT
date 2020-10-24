@@ -1,4 +1,5 @@
 Felt.registerEffectHandler('addAttitude', function(db, effect) {
+  // TODO replace with impression
   Felt.checkEffectKeys(effect, ['cause', 'charge', 'source', 'target']);
   return createEntity(db, {
     type: 'attitude',

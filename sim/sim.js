@@ -348,7 +348,7 @@ function getAllEntityAttributes(identifier) {
 }
 
 function getEntityAttributeByEID(eid, attr) {
-  // TODO maybe some error-checking
+  // TODO maybe some error-checking (check this entity has this attr)
   return Sim.q(`[:find ?value . :where [${eid} "${attr}" ?value]]`);
 }
 
