@@ -54,7 +54,7 @@ Felt.registerAction('thinkAboutResearch', {
     actor: vars.c1,
     target: vars.c1,
     effects: [],
-    text: `${vars.n1} thought about a research problem`,
+    text: `${vars.n1} thought about a research problem and came up with some new ideas`,
     tags: ['inspiration']
   })
 });
@@ -131,7 +131,7 @@ Felt.registerAction('worryAboutOthersProjectDrama', {
     project: vars.proj,
     effects: [
       {
-        type: 'addImpression', source: vars.c1, target: vars.c2, value: +1,
+        type: 'addImpression', source: vars.c1, target: vars.c2, value: +1, tag: 'struggling',
         reason: `${vars.n2} sure is working hard on "${vars.projname}"`
       }
     ],
