@@ -185,7 +185,7 @@ function generateCharacter(db) {
     portrait: randNth(validPortraits)
   };
   if (hook) entity.hook = hook;
-  console.log(entity);
+  //console.log(entity);
   return createEntity(db, entity);
 }
 
