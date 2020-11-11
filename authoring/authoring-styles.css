@@ -1,0 +1,51 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: rgb(211,211,211);
+  font-family: 'Helvetica Neue';
+}
+button {
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  flex-basis: auto;
+}
+.action-library {
+  display: flex;
+  flex-flow: row wrap;
+}
+.action-wrapper {
+  margin:.5rem;
+  background: white;
+  border-radius: .3rem;
+  padding: .5rem;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.action {
+  width: 100%;
+}
+.action .name {
+  font-size: 1rem;
+}
+.action .tagline {
+  font-size: .7rem;
+}
+
+.small {
+  font-size: .7rem;
+}
+.muted {
+  color: grey;
+}
