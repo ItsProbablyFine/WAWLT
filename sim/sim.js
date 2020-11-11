@@ -441,7 +441,10 @@ return {
   getAllInfoAboutCharacter: getAllInfoAboutCharacter,
   getAllEntityAttributes: getAllEntityAttributes,
   getEntityAttributeByEID: getEntityAttributeByEID,
-  getCharacterNameByID: getCharacterNameByID
+  getCharacterNameByID: getCharacterNameByID,
+  getAllActions: function() {
+    return Felt.allActions(gameDB);
+  }
 }
 
 })();

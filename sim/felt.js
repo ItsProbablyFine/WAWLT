@@ -283,6 +283,9 @@ return {
   processEffect,
   addEvent,
   realizeEvent,
+  allActions: function(db) {
+    return Object.values(actionLibrary);
+  },
   possibleActions: function(db) {
     const allActions = Object.values(actionLibrary);
     return possibleActions(db, allActions);
