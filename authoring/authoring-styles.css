@@ -42,6 +42,14 @@ button {
 .action .tagline {
   font-size: .7rem;
 }
+.action .tag {
+  font-size: .7rem;
+  background: lightblue;
+  border-radius: .2rem;
+  width: fit-content;
+  padding: .1rem .2rem .2rem;
+  margin: .1rem;
+}
 
 .small {
   font-size: .7rem;
